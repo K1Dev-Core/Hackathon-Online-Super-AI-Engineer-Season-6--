@@ -1,0 +1,32 @@
+# Operating-system and editor files
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Python caches and environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Local credentials and environment files
+.env
+.env.*
+!.env.example
+.kaggle/
+kaggle.json
+access_token
+
+# Kaggle competition data is downloaded locally and is not redistributed.
+data/
+
+# Downloaded dependencies, external captures, and generated analysis tables
+work/vendor/
+work/external/
+work/*.csv
+work/*.json

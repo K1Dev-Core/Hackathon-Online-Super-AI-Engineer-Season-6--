@@ -27,6 +27,10 @@ For the competition files used here:
 ## Important Files
 
 - `submission_rank1_best_publish_complete.csv`: exact submitted file, public score `0.96193`.
+- `submission_candidates/submission_candidate_01_champion.csv`: ranked copy of the exact champion artifact.
+- `candidate_suite_report.md`: ranked candidate decision report and score assumptions.
+- `candidate_manifest.csv`: machine-readable candidate ranking and estimates.
+- `superai6_candidate_suite_ranked.zip`: complete handoff bundle with all candidates and checksums.
 - `kaggle_submission_report.md`: submission history, validation, leaderboard result.
 - `predict_final_model.py`: reproducible final model.
 

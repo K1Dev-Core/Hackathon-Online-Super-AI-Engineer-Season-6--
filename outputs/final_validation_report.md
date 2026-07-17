@@ -2,10 +2,16 @@
 
 ## Status
 
+- Recommended unscored challenger: `submission_rank1_structural_plus1.csv`
 - Exact submission artifact: `submission_rank1_best_publish_complete.csv`
 - Latest recorded public score: `0.96193` (tied first place when last checked)
 - This validation pass made no additional upload.
 - No credential or API token is included in this bundle.
+
+The challenger adds only `Id=9816` to the scored artifact. Its SHA-256 is
+`fa357be08880f7dbdf32e61052ad01eeae251c8706d2bc077818efaa7d9a73d7` and it
+contains 2,810 positive labels. The scored model below remains unchanged so it
+can reproduce the exact rank-1 submission.
 
 ## Reproducibility
 

@@ -16,6 +16,7 @@ CANDIDATE_DIR = OUTPUT_ROOT / "submission_candidates"
 TRAIN_PATH = ROOT / "data" / "X_train.csv"
 TEST_PATH = ROOT / "data" / "X_test.csv"
 CHAMPION_PATH = OUTPUT_ROOT / "submission_rank1_best_publish_complete.csv"
+STRUCTURAL_PATH = OUTPUT_ROOT / "submission_rank1_structural_plus1.csv"
 MANIFEST_PATH = OUTPUT_ROOT / "candidate_manifest.csv"
 SCENARIO_PATH = OUTPUT_ROOT / "candidate_score_scenarios.csv"
 RANKING_PATH = OUTPUT_ROOT / "candidate_residual_ranking.csv"
@@ -34,55 +35,62 @@ PUBLIC_CONFUSION = {
 CANDIDATE_SPECS = [
     {
         "rank": 1,
-        "filename": "submission_candidate_01_champion.csv",
-        "category": "scored-safe",
-        "source": "submission_rank1_best_publish_complete.csv",
-        "description": "Exact public rank-1 champion; recommended.",
+        "filename": "submission_candidate_00_structural_challenger.csv",
+        "category": "structural-unscored",
+        "description": "Champion plus the unique missing SYN-capture stream row.",
+        "assumed_residual_precision": 0.98,
     },
     {
         "rank": 2,
+        "filename": "submission_candidate_01_champion.csv",
+        "category": "scored-safe",
+        "source": "submission_rank1_best_publish_complete.csv",
+        "description": "Exact public rank-1 champion; scored fallback.",
+    },
+    {
+        "rank": 3,
         "filename": "submission_candidate_02_lb_robust.csv",
         "category": "scored-safe",
         "source": "submission_rank1_probe4_publish137.csv",
         "description": "Champion minus four validated PUBLISH rows.",
     },
     {
-        "rank": 3,
+        "rank": 4,
         "filename": "submission_candidate_03_lb_conservative.csv",
         "category": "scored-safe",
         "source": "submission_rank1_probe3_publish132.csv",
         "description": "Earlier validated PUBLISH checkpoint.",
     },
     {
-        "rank": 4,
+        "rank": 5,
         "filename": "submission_candidate_04_precision_floor.csv",
         "category": "scored-safe",
         "source": "submission_rank1_probe1.csv",
         "description": "Precision-first checkpoint after removing PINGRESP false positives.",
     },
     {
-        "rank": 5,
+        "rank": 6,
         "filename": "submission_candidate_05_micro_payload_hedge.csv",
         "category": "experimental",
         "description": "Champion plus three undecoded payload siblings.",
         "assumed_residual_precision": 0.10,
     },
     {
-        "rank": 6,
+        "rank": 7,
         "filename": "submission_candidate_06_capture_context_hedge.csv",
         "category": "experimental",
         "description": "Champion plus 40 stream-2-to-5 capture-context rows.",
         "assumed_residual_precision": 0.05,
     },
     {
-        "rank": 7,
+        "rank": 8,
         "filename": "submission_candidate_07_pu_top64_hedge.csv",
         "category": "experimental",
         "description": "Champion plus the top 64 hard-gated residual rows.",
         "assumed_residual_precision": 0.05,
     },
     {
-        "rank": 8,
+        "rank": 9,
         "filename": "submission_candidate_08_target3000_aggressive.csv",
         "category": "experimental",
         "description": "Champion plus 191 residual rows; exactly 3,000 positive labels.",
@@ -108,6 +116,52 @@ def write_submission(labels: pd.Series, test: pd.DataFrame, path: Path) -> pd.Da
     validate_submission(submission, test)
     submission.to_csv(path, index=False)
     return submission
+
+
+def structural_syn_completion(
+    train: pd.DataFrame,
+    test: pd.DataFrame,
+    champion: pd.Series,
+) -> pd.Series:
+    syn_capture = (
+        test["tcp.window_size"].eq(512)
+        & test["tcp.flags.syn"].eq(1)
+    ) | (
+        test["frame.len"].eq(58)
+        & test["tcp.window_size"].eq(65_392)
+        & test["tcp.flags.syn"].eq(1)
+        & test["tcp.flags.ack"].eq(1)
+    )
+    syn_stream_counts = test.loc[syn_capture, "tcp.stream"].value_counts()
+    expected_streams = set(range(600))
+    observed_streams = set(syn_stream_counts.index.astype(int))
+    missing_streams = expected_streams - observed_streams
+    if int(syn_capture.sum()) != 599 or not syn_stream_counts.eq(1).all():
+        raise RuntimeError("Expected 599 unique one-row SYN-capture streams")
+    if missing_streams != {194} or observed_streams - expected_streams:
+        raise RuntimeError(f"Unexpected SYN-capture stream gap: {sorted(missing_streams)}")
+
+    # Ignore RTT because the normal and test captures use the same packet template
+    # with capture-specific timing values.
+    template_columns = [
+        column
+        for column in test.columns
+        if column not in {"Id", "tcp.analysis.initial_rtt"}
+    ]
+    normal_template = train.loc[train["tcp.stream"].eq(194), template_columns]
+    stream_rows = test["tcp.stream"].eq(194)
+    if len(normal_template) != 9 or int(stream_rows.sum()) != 10:
+        raise RuntimeError("Unexpected stream-194 normal template size")
+    normal_hashes = set(hash_rows(normal_template, template_columns))
+    stream_hashes = hash_rows(test.loc[stream_rows, template_columns], template_columns)
+    extra_ids = test.loc[stream_rows, "Id"].loc[~stream_hashes.isin(normal_hashes)]
+    if extra_ids.tolist() != [9816]:
+        raise RuntimeError(f"Unexpected stream-194 structural candidates: {extra_ids.tolist()}")
+
+    completion = test["Id"].isin(extra_ids)
+    if int(completion.sum()) != 1 or bool(champion.loc[completion].any()):
+        raise RuntimeError("Structural completion must add exactly one new row")
+    return completion
 
 
 def hash_rows(frame: pd.DataFrame, columns: list[str]) -> pd.Series:
@@ -267,7 +321,7 @@ def build_manifest(
                 base_private_true_positives,
                 base_private_predictions,
                 additions,
-                0.50,
+                1.0,
             )
             public_score = ""
             estimate_basis = "offline stress estimate; not leaderboard evidence"
@@ -345,13 +399,25 @@ def main() -> None:
     CANDIDATE_DIR.mkdir(parents=True, exist_ok=True)
     candidates: dict[str, pd.DataFrame] = {}
 
-    for spec in CANDIDATE_SPECS[:4]:
+    for spec in CANDIDATE_SPECS:
+        if "source" not in spec:
+            continue
         source = pd.read_csv(OUTPUT_ROOT / str(spec["source"]))
         validate_submission(source, test)
         filename = str(spec["filename"])
         path = CANDIDATE_DIR / filename
         source.to_csv(path, index=False)
         candidates[filename] = source
+
+    structural_completion = structural_syn_completion(train, test, champion)
+    structural_filename = "submission_candidate_00_structural_challenger.csv"
+    structural_submission = write_submission(
+        champion | structural_completion,
+        test,
+        CANDIDATE_DIR / structural_filename,
+    )
+    structural_submission.to_csv(STRUCTURAL_PATH, index=False)
+    candidates[structural_filename] = structural_submission
 
     micro_payload = ~champion & test["tcp.stream"].eq(2) & (
         (
@@ -403,7 +469,7 @@ def main() -> None:
         path = CANDIDATE_DIR / filename
         candidates[filename] = write_submission(champion | mask, test, path)
 
-    expected_counts = [2_809, 2_805, 2_799, 2_794, 2_812, 2_849, 2_873, 3_000]
+    expected_counts = [2_810, 2_809, 2_805, 2_799, 2_794, 2_812, 2_849, 2_873, 3_000]
     actual_counts = [
         int(candidates[str(spec["filename"])]["label"].sum())
         for spec in CANDIDATE_SPECS
@@ -416,6 +482,7 @@ def main() -> None:
     scenarios.to_csv(SCENARIO_PATH, index=False)
 
     checksum_paths = sorted(CANDIDATE_DIR.glob("*.csv")) + [
+        STRUCTURAL_PATH,
         MANIFEST_PATH,
         SCENARIO_PATH,
         RANKING_PATH,

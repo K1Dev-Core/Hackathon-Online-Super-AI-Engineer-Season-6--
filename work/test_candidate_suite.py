@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUTPUTS = ROOT / "outputs"
 CANDIDATES = OUTPUTS / "submission_candidates"
 EXPECTED_COUNTS = {
+    "submission_candidate_00_structural_challenger.csv": 2_810,
     "submission_candidate_01_champion.csv": 2_809,
     "submission_candidate_02_lb_robust.csv": 2_805,
     "submission_candidate_03_lb_conservative.csv": 2_799,
@@ -44,11 +45,26 @@ def main() -> None:
     test = pd.read_csv(ROOT / "data" / "X_test.csv", low_memory=False)
     champion_source = pd.read_csv(OUTPUTS / "submission_rank1_best_publish_complete.csv")
     champion = pd.read_csv(CANDIDATES / "submission_candidate_01_champion.csv")
+    structural = pd.read_csv(CANDIDATES / "submission_candidate_00_structural_challenger.csv")
 
     assert champion.equals(champion_source)
     rebuilt = load_model().build_submission(train, test)
     assert rebuilt["Id"].equals(champion["Id"])
     assert rebuilt["label"].astype("int8").equals(champion["label"].astype("int8"))
+    assert structural.equals(pd.read_csv(OUTPUTS / "submission_rank1_structural_plus1.csv"))
+    structural_additions = structural["label"].eq(1) & champion["label"].eq(0)
+    assert structural.loc[structural_additions, "Id"].tolist() == [9_816]
+
+    syn_capture = (
+        test["tcp.window_size"].eq(512) & test["tcp.flags.syn"].eq(1)
+    ) | (
+        test["frame.len"].eq(58)
+        & test["tcp.window_size"].eq(65_392)
+        & test["tcp.flags.syn"].eq(1)
+        & test["tcp.flags.ack"].eq(1)
+    )
+    assert int(syn_capture.sum()) == 599
+    assert set(range(600)) - set(test.loc[syn_capture, "tcp.stream"]) == {194}
 
     submissions: dict[str, pd.DataFrame] = {}
     for filename, expected_count in EXPECTED_COUNTS.items():
@@ -80,10 +96,11 @@ def main() -> None:
     assert pu_additions <= target_additions
 
     manifest = pd.read_csv(OUTPUTS / "candidate_manifest.csv")
-    assert manifest["rank"].tolist() == list(range(1, 9))
+    assert manifest["rank"].tolist() == list(range(1, 10))
     assert manifest.loc[manifest["recommended"].eq("YES"), "rank"].tolist() == [1]
     assert manifest["positive_labels"].tolist() == list(EXPECTED_COUNTS.values())
-    assert manifest.loc[0, "actual_public_f1"] == 0.96193
+    champion_row = manifest.loc[manifest["filename"].eq("submission_candidate_01_champion.csv")]
+    assert champion_row["actual_public_f1"].iloc[0] == 0.96193
 
     checksums: dict[str, str] = {}
     for line in (OUTPUTS / "candidate_suite_checksums.sha256").read_text().splitlines():
@@ -94,6 +111,8 @@ def main() -> None:
     zip_path = OUTPUTS / "superai6_candidate_suite_ranked.zip"
     with zipfile.ZipFile(zip_path) as archive:
         names = set(archive.namelist())
+        assert "submission_candidates/submission_candidate_00_structural_challenger.csv" in names
+        assert "submission_rank1_structural_plus1.csv" in names
         assert "submission_candidates/submission_candidate_01_champion.csv" in names
         assert "candidate_manifest.csv" in names
         assert "candidate_suite_checksums.sha256" in names

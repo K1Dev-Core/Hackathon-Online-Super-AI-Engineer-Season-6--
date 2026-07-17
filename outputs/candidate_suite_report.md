@@ -2,56 +2,44 @@
 
 ## คำแนะนำหลัก
 
-เลือก `submission_candidate_01_champion.csv` เป็นไฟล์หลัก มี positive label `2,809` แถว เป็นไฟล์เดียวกับที่ได้ Public F1 `0.96193` และ SHA-256 ตรงกับ artifact ที่เคยส่งทุกบิต
+เลือก `submission_rank1_structural_plus1.csv` เป็น challenger ที่ดีที่สุดสำหรับการส่งครั้งถัดไป ไฟล์นี้ต่อยอดจาก champion ที่ได้ Public F1 `0.96193` โดยเพิ่มเพียง `Id=9816` ทำให้มี positive label `2,810` แถว
 
-ตรวจ leaderboard ล่าสุดวันที่ 18 กรกฎาคม 2026 แล้ว คะแนน `0.96193` ยังเสมออันดับ 1 และอันดับถัดไปอยู่ที่ `0.95934`
+ตรวจ leaderboard แบบ read-only วันที่ 18 กรกฎาคม 2026 แล้ว `0.96193` ยังเสมออันดับ 1 และคะแนนถัดไปคือ `0.95934`
 
-ยังไม่มี residual candidate กลุ่มใดผ่าน precision ขั้นต่ำ `0.48581` ที่ต้องใช้เพื่อเพิ่ม F1 จาก champion. หลังตัด normal capture families, historical false positives และ RTT groups ที่เป็น normal แล้ว calibrated attack score สูงสุดยังต่ำกว่า `0.05` จึงไม่มีหลักฐาน offline ว่า experimental hedge จะชนะ champion
+ถ้าต้องการไฟล์ที่มีผล Kaggle ยืนยันแล้วโดยไม่รับความเสี่ยงใหม่ ให้ใช้ `submission_candidates/submission_candidate_01_champion.csv` ซึ่งเหมือน artifact เดิมทุกบิต
 
 ## อันดับไฟล์
 
-| อันดับ | ไฟล์ | ประเภท | Positive | Public F1 | Private F1 ประเมิน | สถานะ |
-|---:|---|---|---:|---:|---:|---|
-| 1 | `submission_candidate_01_champion.csv` | scored-safe | 2,809 | 0.96193 | 0.97162 | แนะนำ |
-| 2 | `submission_candidate_02_lb_robust.csv` | scored-safe | 2,805 | 0.96119 | 0.97094 | rollback checkpoint |
-| 3 | `submission_candidate_03_lb_conservative.csv` | scored-safe | 2,799 | 0.96045 | 0.96956 | rollback checkpoint |
-| 4 | `submission_candidate_04_precision_floor.csv` | scored-safe | 2,794 | 0.95971 | 0.96853 | rollback checkpoint |
-| 5 | `submission_candidate_05_micro_payload_hedge.csv` | experimental | 2,812 | ไม่มี | 0.97124 | ไม่แนะนำ |
-| 6 | `submission_candidate_06_capture_context_hedge.csv` | experimental | 2,849 | ไม่มี | 0.96585 | ไม่แนะนำ |
-| 7 | `submission_candidate_07_pu_top64_hedge.csv` | experimental | 2,873 | ไม่มี | 0.96242 | ไม่แนะนำ |
-| 8 | `submission_candidate_08_target3000_aggressive.csv` | experimental | 3,000 | ไม่มี | 0.94348 | ไม่แนะนำ |
+| อันดับ | ไฟล์ | Positive | Public F1 | Private F1 ประเมิน | สถานะ |
+|---:|---|---:|---:|---:|---|
+| 1 | `submission_rank1_structural_plus1.csv` | 2,810 | ยังไม่ส่ง | 0.97179 | แนะนำ: structural challenger |
+| 2 | `submission_candidate_01_champion.csv` | 2,809 | 0.96193 | 0.97162 | fallback ที่มีคะแนนจริง |
+| 3 | `submission_candidate_02_lb_robust.csv` | 2,805 | 0.96119 | 0.97094 | rollback checkpoint |
+| 4 | `submission_candidate_03_lb_conservative.csv` | 2,799 | 0.96045 | 0.96956 | rollback checkpoint |
+| 5 | `submission_candidate_04_precision_floor.csv` | 2,794 | 0.95971 | 0.96853 | rollback checkpoint |
+| 6 | `submission_candidate_05_micro_payload_hedge.csv` | 2,812 | ยังไม่ส่ง | 0.97124 | ไม่แนะนำ |
+| 7 | `submission_candidate_06_capture_context_hedge.csv` | 2,849 | ยังไม่ส่ง | 0.96585 | ไม่แนะนำ |
+| 8 | `submission_candidate_07_pu_top64_hedge.csv` | 2,873 | ยังไม่ส่ง | 0.96242 | ไม่แนะนำ |
+| 9 | `submission_candidate_08_target3000_aggressive.csv` | 3,000 | ยังไม่ส่ง | 0.94348 | ไม่แนะนำ |
 
-คะแนน Private เป็นการประเมิน ไม่ใช่ผล Kaggle. สำหรับอันดับ 1-4 ใช้ public confusion posterior และสมมติว่าข้อมูล test มี attack รวม 3,000 แถว. สำหรับอันดับ 5-8 ใช้ stress assumptions ที่บันทึกใน `candidate_manifest.csv`; ดูทุก precision scenario ได้ใน `candidate_score_scenarios.csv`
+คะแนน Private เป็นค่าประเมิน ไม่ใช่ผล Kaggle โดยสมมติว่าชุด test มี attack รวม 3,000 แถวและ public/private แบ่งครึ่ง ดูสมมติฐานทุกเวอร์ชันใน `candidate_manifest.csv` และทุก precision scenario ใน `candidate_score_scenarios.csv`
 
-ช่วง posterior ของอันดับ 1 คือ `0.97060-0.97198`. สมการ public ที่สอดคล้องกับ submission history ให้ `P=1,459`, `predicted positive=1,352`, `TP=1,352`, `FP=0`, `FN=107` บน public split. เมื่อสมมติ attack รวม 3,000 แถว จะเหลือ private positive `1,541` แถว
+## หลักฐาน Structural +1
 
-## หลักฐานตัดสิน
+- SYN-flood fingerprint มี 599 แถวและ 599 `tcp.stream` ไม่ซ้ำ ครอบคลุม stream `0-599` ทุกค่าจนขาดเพียง stream `194`
+- Normal stream `194` ใน train มี packet template 9 แถว ส่วน test มี 10 แถว โดย 9 แถวตรง template เดิมเมื่อไม่นับค่า RTT ที่เปลี่ยนตาม capture
+- แถวส่วนเกินเพียงแถวเดียวคือ `Id=9816`: PUBLISH, `frame.len=195`, `tcp.len=141`, `tcp.window_size=5728`, `mqtt.len=138`
+- โครงสร้างนี้สอดคล้องกับ SYN capture ขนาด 600 แถวที่มี 599 SYN streams และ background MQTT packet หนึ่งแถวใน stream ที่ขาด
+- ความเชื่อมั่น `0.98` ใน manifest เป็น structural estimate ไม่ใช่ probability ที่ calibrate จาก Kaggle
 
-- PUBLISH `tcp.window_size=256` ผ่าน probe ต่อเนื่องและถูกเก็บครบแล้ว
-- PUBLISH `tcp.window_size=253` ทำให้คะแนนตกจาก `0.95649` เป็น `0.91143` จึงเป็น hard-negative family
-- PUBLISH window `254` และ `5718-5756` ตรง normal telemetry families
-- PINGRESP 5 แถวที่ `frame.len=56`, `window=253` เป็น false positives ที่ยืนยันจาก leaderboard และถูกตัดแล้ว
-- Candidate TCP ACK สองแถวจาก probe เก่าอยู่ใน normal-only RTT groups และมี signature เดียวกันใน train จึงไม่ถูกใช้
-- 40 capture-context rows มี supervised attack score ใกล้ศูนย์และส่วนใหญ่มี normal signature ซ้ำจำนวนมาก
-- External MQTT captures มี TCP-stack domain shift จึงใช้เป็นหลักฐานสนับสนุน residual label ไม่ได้
-
-## ไฟล์ประกอบ
-
-- `candidate_manifest.csv` เก็บอันดับ, positive count, actual score, estimated score และสมมติฐาน
-- `candidate_score_scenarios.csv` แสดง F1 เมื่อ precision ของแถวที่เติมเปลี่ยนตั้งแต่ 0 ถึง 1
-- `candidate_residual_ranking.csv` เก็บ residual ranking และเหตุผลเชิง feature ของ top candidates
-- `candidate_suite_checksums.sha256` ใช้ยืนยันทุกไฟล์
-- `build_candidate_suite.py` สร้างชุดนี้ซ้ำแบบ deterministic
-- `predict_final_model.py` สร้าง champion จาก raw train/test โดยไม่ต้องใช้ไฟล์โมเดล `.pkl`
-- `superai6_candidate_suite_ranked.zip` รวม submission, report, manifest, checksums และ scripts สำคัญ
+ถ้าสมมติ champion ไม่มี false positive และมี attack 3,000 แถว F1 เต็มชุดคือ `0.967120`. หาก `Id=9816` เป็น TP challenger จะเป็น `0.967298`; หากเป็น FP จะเป็น `0.966954`. จุดคุ้มของการเพิ่มแถวนี้คือโอกาสเป็น attack มากกว่า `0.48581`
 
 ## Validation
 
-- ตรวจครบ 8 submissions
-- ทุกไฟล์มี 10,000 แถวและ schema `Id,label`
-- Id ไม่ซ้ำและลำดับตรง `X_test.csv`
-- label เป็น binary และไม่มี missing value
-- champion rebuild ได้ตรงไฟล์เดิมทุก label
-- champion SHA-256: `2159bff8a7e8b12899562692a0b291a90200fb85e9efaaa18bcfd1d7ef650bfb`
-- ไม่มีการ submit Kaggle ระหว่างการสร้างชุดนี้
+- ตรวจครบ 9 candidate submissions ทุกไฟล์มี 10,000 แถวและ schema `Id,label`
+- Id ไม่ซ้ำ ลำดับตรง `X_test.csv`, label เป็น binary และไม่มี missing value
+- Challenger ต่างจาก champion เพียง `Id=9816`
+- Challenger SHA-256: `fa357be08880f7dbdf32e61052ad01eeae251c8706d2bc077818efaa7d9a73d7`
+- Champion SHA-256: `2159bff8a7e8b12899562692a0b291a90200fb85e9efaaa18bcfd1d7ef650bfb`
+- ไม่มีการ submit Kaggle ระหว่างการสร้าง challenger
 - ไม่มี API token อยู่ในไฟล์หรือ bundle

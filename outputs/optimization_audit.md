@@ -40,7 +40,9 @@
 
 ## Decision
 
-The submitted model is retained unchanged. No candidate group clears the
-approximately 48 percent precision needed to improve F1 at the current score,
-and changing the prediction would be less reliable than preserving the tied
-first-place artifact.
+The submitted model remains the scored fallback. A later stream-completion
+audit identified one new exception: SYN-flood rows cover 599 unique streams in
+the range 0-599 and miss only stream 194, whose only packet beyond the normal
+nine-row template is `Id=9816`. This one-row structural challenger is documented
+in `candidate_suite_report.md`; the larger residual groups still fail the
+approximately 48 percent precision requirement.

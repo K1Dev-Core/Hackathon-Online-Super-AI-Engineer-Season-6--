@@ -1,0 +1,6 @@
+offline_rank,filename,description,positive_labels,additions_vs_champion,mean_added_true_positives,offline_mean_f1,offline_f1_p05,offline_f1_p95,win_rate_vs_champion,win_rate_vs_structural,required_structural_probability_if_other_additions_false,verdict,offline_f1_gain_vs_champion,public_delta_proxy
+1,submission_offline_01_scoremax_structural.csv,Champion plus structural stream-completion row.,2810,1,0.9951,0.96729608,0.96729776,0.96729776,0.9951,0.0,0.48356,SCORE_MAX_WINNER,0.00017609,0.96210609
+2,submission_offline_02_hedge_payload132.csv,Structural row plus one undecoded 132-byte payload hedge.,2811,2,1.1064,0.96716792,0.9671313,0.96747548,0.99545,0.1113,0.96712,CHAMPION_BEATING_BACKUP,4.793e-05,0.96197793
+3,submission_offline_03_hedge_payload150.csv,Structural row plus one undecoded 150-byte payload hedge.,2811,2,1.1063,0.96716789,0.9671313,0.96747548,0.99545,0.1112,0.96712,CHAMPION_BEATING_BACKUP,4.79e-05,0.9619779
+4,submission_offline_04_hedge_rare_ack.csv,Structural row plus one rare stream-2 ACK hedge.,2811,2,1.0909,0.96716259,0.9671313,0.96747548,0.9957,0.0958,0.96712,CHAMPION_BEATING_BACKUP,4.26e-05,0.9619726
+5,submission_offline_05_hedge_stream5_ack.csv,Structural row plus one stream-5 ACK hedge.,2811,2,1.0893,0.96716204,0.9671313,0.96747548,0.9958,0.0942,0.96712,CHAMPION_BEATING_BACKUP,4.205e-05,0.96197205

@@ -4,7 +4,7 @@
 
 เลือก `submission_rank1_structural_plus1.csv` เป็น challenger ที่ดีที่สุดสำหรับการส่งครั้งถัดไป ไฟล์นี้ต่อยอดจาก champion ที่ได้ Public F1 `0.96193` โดยเพิ่มเพียง `Id=9816` ทำให้มี positive label `2,810` แถว
 
-ตรวจ leaderboard แบบ read-only วันที่ 18 กรกฎาคม 2026 แล้ว `0.96193` ยังเสมออันดับ 1 และคะแนนถัดไปคือ `0.95934`
+leaderboard snapshot ที่บันทึกไว้แสดงว่า `0.96193` เสมออันดับ 1 และคะแนนถัดไปคือ `0.95934` โดยรายงานนี้ไม่อ้างว่าเป็นสถานะสดล่าสุด
 
 ถ้าต้องการไฟล์ที่มีผล Kaggle ยืนยันแล้วโดยไม่รับความเสี่ยงใหม่ ให้ใช้ `submission_candidates/submission_candidate_01_champion.csv` ซึ่งเหมือน artifact เดิมทุกบิต
 
@@ -32,7 +32,9 @@
 - โครงสร้างนี้สอดคล้องกับ SYN capture ขนาด 600 แถวที่มี 599 SYN streams และ background MQTT packet หนึ่งแถวใน stream ที่ขาด
 - ความเชื่อมั่น `0.98` ใน manifest เป็น structural estimate ไม่ใช่ probability ที่ calibrate จาก Kaggle
 
-ถ้าสมมติ champion ไม่มี false positive และมี attack 3,000 แถว F1 เต็มชุดคือ `0.967120`. หาก `Id=9816` เป็น TP challenger จะเป็น `0.967298`; หากเป็น FP จะเป็น `0.966954`. จุดคุ้มของการเพิ่มแถวนี้คือโอกาสเป็น attack มากกว่า `0.48581`
+ถ้าสมมติ champion ไม่มี false positive และมี attack 3,000 แถว F1 เต็มชุดคือ `0.967120`. หาก `Id=9816` เป็น TP challenger จะเป็น `0.967298`; หากเป็น FP จะเป็น `0.966954`. จุดคุ้มของการเพิ่มแถวนี้คือโอกาสเป็น attack มากกว่า `0.48356`
+
+ชุด benchmark ล่าสุดอยู่ใน `offline_benchmark_report.md` และ `offline_benchmark_winners.csv`. ผลจำลอง 20,000 รอบยังจัด `offline_benchmark_candidates/submission_offline_01_scoremax_structural.csv` เป็นอันดับ 1; ไฟล์นี้เหมือน `submission_rank1_structural_plus1.csv` ทุก label
 
 ## Validation
 

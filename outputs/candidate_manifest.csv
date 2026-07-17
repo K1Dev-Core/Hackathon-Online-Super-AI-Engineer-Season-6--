@@ -1,7 +1,7 @@
 rank,filename,category,positive_labels,additions_vs_champion,removals_vs_champion,actual_public_f1,estimated_private_f1,estimate_low,estimate_high,assumed_residual_precision,required_residual_precision,estimate_basis,description,recommended
 1,submission_candidate_00_structural_challenger.csv,structural-unscored,2810,1,0,,0.97179,0.97146,0.97179,0.98,0.48581,offline stress estimate; not leaderboard evidence,Champion plus the unique missing SYN-capture stream row.,YES
 2,submission_candidate_01_champion.csv,scored-safe,2809,0,0,0.96193,0.97162,0.9706,0.97198,,0.48581,"public confusion posterior; assumes 3,000 total attacks",Exact public rank-1 champion; scored fallback.,NO
-3,submission_candidate_02_lb_robust.csv,scored-safe,2805,0,4,0.96119,0.97094,0.9699,0.97129,,0.48581,"public confusion posterior; assumes 3,000 total attacks",Champion minus four validated PUBLISH rows.,NO
+3,submission_candidate_02_lb_robust.csv,scored-safe,2805,0,4,0.96119,0.97094,0.96991,0.97129,,0.48581,"public confusion posterior; assumes 3,000 total attacks",Champion minus four validated PUBLISH rows.,NO
 4,submission_candidate_03_lb_conservative.csv,scored-safe,2799,0,10,0.96045,0.96956,0.96854,0.96992,,0.48581,"public confusion posterior; assumes 3,000 total attacks",Earlier validated PUBLISH checkpoint.,NO
 5,submission_candidate_04_precision_floor.csv,scored-safe,2794,0,15,0.95971,0.96853,0.9675,0.96888,,0.48581,"public confusion posterior; assumes 3,000 total attacks",Precision-first checkpoint after removing PINGRESP false positives.,NO
 6,submission_candidate_05_micro_payload_hedge.csv,experimental,2812,3,0,,0.97124,0.97114,0.97214,0.1,0.48581,offline stress estimate; not leaderboard evidence,Champion plus three undecoded payload siblings.,NO

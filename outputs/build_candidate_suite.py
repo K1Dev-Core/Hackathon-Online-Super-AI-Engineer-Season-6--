@@ -250,7 +250,7 @@ def posterior_private_estimate(
     expected_true_positives = private_predictions * expected_precision
     expected_f1 = 2 * expected_true_positives / (PRIVATE_POSITIVES + private_predictions)
 
-    rng = np.random.default_rng(20260718 + total_predictions)
+    rng = np.random.default_rng(20260717 + total_predictions)
     precision_samples = rng.beta(alpha, beta, 250_000)
     f1_samples = 2 * private_predictions * precision_samples / (
         PRIVATE_POSITIVES + private_predictions
@@ -381,7 +381,7 @@ def write_deterministic_zip(paths: list[Path]) -> None:
     with zipfile.ZipFile(ZIP_PATH, "w") as archive:
         for path in paths:
             relative = path.relative_to(OUTPUT_ROOT).as_posix()
-            info = zipfile.ZipInfo(relative, date_time=(2026, 7, 18, 0, 0, 0))
+            info = zipfile.ZipInfo(relative, date_time=(2026, 7, 17, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o644 << 16
             archive.writestr(info, path.read_bytes())

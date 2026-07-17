@@ -27,6 +27,11 @@ For the competition files used here:
 ## Important Files
 
 - `submission_rank1_structural_plus1.csv`: recommended unscored challenger; champion plus `Id=9816`.
+- `offline_benchmark_candidates/submission_offline_01_scoremax_structural.csv`: score-max copy of the same challenger and the primary offline winner.
+- `offline_benchmark_winners.csv`: ranked primary and backup files that beat the champion expectation.
+- `offline_benchmark_sensitivity.csv`: conservative stress grid across 2,900-3,100 attacks.
+- `offline_benchmark_report.md`: 20,000-run benchmark, public-delta proxy, and guardrails.
+- `superai6_offline_benchmark_bundle.zip`: all 11 offline candidates with source and checksums.
 - `submission_candidates/submission_candidate_00_structural_challenger.csv`: ranked copy of the challenger.
 - `submission_rank1_best_publish_complete.csv`: exact submitted file, public score `0.96193`.
 - `submission_candidates/submission_candidate_01_champion.csv`: ranked copy of the exact champion artifact.

@@ -1,0 +1,12 @@
+offline_rank,filename,description,positive_labels,additions_vs_champion,mean_added_true_positives,offline_mean_f1,offline_f1_p05,offline_f1_p95,win_rate_vs_champion,win_rate_vs_structural,required_structural_probability_if_other_additions_false,verdict,offline_f1_gain_vs_champion,public_delta_proxy
+1,submission_offline_01_scoremax_structural.csv,Champion plus structural stream-completion row.,2810,1,0.9951,0.96729608,0.96729776,0.96729776,0.9951,0.0,0.48356,SCORE_MAX_WINNER,0.00017609,0.96210609
+2,submission_offline_02_hedge_payload132.csv,Structural row plus one undecoded 132-byte payload hedge.,2811,2,1.1064,0.96716792,0.9671313,0.96747548,0.99545,0.1113,0.96712,CHAMPION_BEATING_BACKUP,4.793e-05,0.96197793
+3,submission_offline_03_hedge_payload150.csv,Structural row plus one undecoded 150-byte payload hedge.,2811,2,1.1063,0.96716789,0.9671313,0.96747548,0.99545,0.1112,0.96712,CHAMPION_BEATING_BACKUP,4.79e-05,0.9619779
+4,submission_offline_04_hedge_rare_ack.csv,Structural row plus one rare stream-2 ACK hedge.,2811,2,1.0909,0.96716259,0.9671313,0.96747548,0.9957,0.0958,0.96712,CHAMPION_BEATING_BACKUP,4.26e-05,0.9619726
+5,submission_offline_05_hedge_stream5_ack.csv,Structural row plus one stream-5 ACK hedge.,2811,2,1.0893,0.96716204,0.9671313,0.96747548,0.9958,0.0942,0.96712,CHAMPION_BEATING_BACKUP,4.205e-05,0.96197205
+6,submission_offline_11_champion_control.csv,Exact scored champion control.,2809,0,0.0,0.96711999,0.96711999,0.96711999,0.0,0.0049,0.0,CONTROL,0.0,0.96193
+7,submission_offline_06_plus_micro3.csv,Structural row plus all three undecoded payload candidates.,2813,4,1.3318,0.96691271,0.96679855,0.96714261,0.2989,0.0346,,LOSES_OFFLINE,-0.00020728,0.96172272
+8,submission_offline_07_plus_top10.csv,Structural row plus top ten residual-ranked rows.,2820,11,1.99505,0.96597768,0.96563574,0.96666667,0.0017,0.0017,,LOSES_OFFLINE,-0.00114231,0.96078769
+9,submission_offline_08_plus_context40.csv,Structural row plus 40 capture-context rows.,2850,41,4.27295,0.96180272,0.96102564,0.96273504,0.0,0.0,,LOSES_OFFLINE,-0.00531727,0.95661273
+10,submission_offline_09_plus_pu64.csv,Structural row plus 64 PU-ranked rows.,2874,65,6.48235,0.95862525,0.95743956,0.95982295,0.0,0.0,,LOSES_OFFLINE,-0.00849474,0.95343526
+11,submission_offline_10_target3000.csv,"Structural row plus 190 residual rows; 3,000 positives.",3000,191,16.3451,0.9417817,0.94,0.94366667,0.0,0.0,,LOSES_OFFLINE,-0.02533829,0.93659171

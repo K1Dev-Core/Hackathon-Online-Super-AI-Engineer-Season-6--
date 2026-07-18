@@ -1,0 +1,6 @@
+rank,filename,positive_labels,added_ids_vs_v11,confidence,role,note,sha256
+1,submission_v12_plus_rare_ack.csv,2815,6011,BEST_NEXT_SINGLE,PRIMARY_RECOMMENDATION,Rank-4 residual; stream 2; stream attack fraction 0.9058.,4f90b772a1c27ef5c422fa6710b804b70c3f3786dce8929ecb0f1b43edb93ddd
+2,submission_v13_plus_stream5_ack.csv,2815,4057,MEDIUM_STREAM_CONTEXT,SINGLE_ROW_ALTERNATIVE,Rank-5 residual; stream 5; stream attack fraction 0.7193.,d6e96226d854108e67c3dd2e7e6bc563efe71f2e7af800fa0eaf83a8f04164c5
+3,submission_v14_plus_dual_ack.csv,2816,6011;4057,AGGRESSIVE_TWO_ROW,AGGRESSIVE_RECOMMENDATION,Combines two highest remaining residual candidates.,75df2b0812eeafc5f7cd77a67a3767058a0150782bff1c694a4d5a2e35b2c908
+4,submission_v15_plus_stream2_ack_cluster.csv,2819,6011;1223;9757;5850;5177,HIGH_RISK_CLUSTER,STREAM2_MAX_UPSIDE,Five remaining stream-2 ACK candidates; includes weak tail rows.,5b6a5a47aba061232eda3d18a1fe4f6859e0294c841343f863a549de7f83c240
+5,submission_v16_plus_residual_top7.csv,2821,6011;4057;4933;1980;5475;1805;55,MAX_RISK_TOP7,MAXIMUM_UPSIDE_BACKUP,"Residual ranks 4-10; highest upside, highest false-positive risk.",a1a58ab8547655d0fff22a07cedd8a2f93a0ee6edb92297f5cae3404fca42702

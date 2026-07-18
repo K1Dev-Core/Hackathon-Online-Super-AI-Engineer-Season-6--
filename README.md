@@ -1,6 +1,6 @@
 # SuperAI6 IoT Attack Detection
 
-Reproducible solution for the Super AI Engineer Season 6 IoT attack detection competition. The final rule model reached a recorded public leaderboard score of **0.96193**, tied for first in the saved leaderboard snapshot.
+Reproducible solution for the Super AI Engineer Season 6 IoT attack detection competition. The strongest recorded submission currently has public F1 **0.96230**.
 
 ## Final Artifacts
 
@@ -9,6 +9,7 @@ Reproducible solution for the Super AI Engineer Season 6 IoT attack detection co
 - `outputs/rank1_model_bundle_audited.zip`: portable audited model bundle.
 - `outputs/offline_benchmark_candidates/submission_offline_01_scoremax_structural.csv`: highest-ranked unsubmitted challenger.
 - `outputs/offline_benchmark_report.md`: 20,000-run ranking and sensitivity report.
+- `outputs/strong_machine_handoff.md`: current baseline, rejected probe, completed PCAP scans, and next high-compute work.
 - `outputs/superai6_offline_benchmark_bundle.zip`: all 11 offline variants, winner list, checksums, and benchmark source.
 - `outputs/optimization_audit.md`: final evidence and optimization audit.
 - `outputs/kaggle_submission_report.md`: submission history and recorded scores.

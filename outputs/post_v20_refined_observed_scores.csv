@@ -1,0 +1,3 @@
+kaggle_ref,filename,public_f1,private_f1
+54809954,submission_v20_plus_rank12_30.csv,0.96461,0.97412
+54809890,submission_v16_plus_residual_top7.csv,0.96414,0.97403

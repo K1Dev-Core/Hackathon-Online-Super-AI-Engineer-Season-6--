@@ -1,0 +1,4 @@
+rank,filename,positive_labels,added_ids_vs_v16,role,confidence,note,sha256
+1,submission_v21_high_context.csv,2831,1223;9757;5850;5177;8362;592;8832;4394;6644;7235,PRIMARY_REFINED,HIGH_ATTACK_CONTEXT,Ranks 12-22 excluding low-attack-fraction stream-0 rows; 10 candidates.,106fa5e99ce9f0a6ffa207b8f4d33f6f8946af760cf7587d9fd07e0cb3fe27dc
+2,submission_v22_high_novelty_4082.csv,2822,4082,SINGLE_NOVELTY_PROBE,HIGH_FREQUENCY_NOVELTY,Single stream-0 row with frequency excess 0.75045.,d0e5f94f49d37562430989f58675a6371c7afdd12bb61965c2e36852085b4255
+3,submission_v23_context_plus_novelty.csv,2832,1223;9757;5850;5177;8362;592;8832;4394;6644;7235;4082,AGGRESSIVE_COMBINED,HIGH_RISK_COMBINED,Combines high attack-context group with 4082 novelty hypothesis.,d5f4779d6687b5d40948063a1ebf149b3837fe0a7e5d9dffbf8494a029efd4b6

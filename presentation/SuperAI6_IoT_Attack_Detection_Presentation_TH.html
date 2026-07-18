@@ -123,6 +123,85 @@ p, li { font-size: clamp(15px, 1.35vw, 21px); line-height: 1.46; }
 @media print {
   body { overflow: visible; background: white; }.deck { height: auto; overflow: visible; }.slide, .slide.active { position: relative; display: block; min-height: 100vh; page-break-after: always; overflow: hidden; }.nav, .notes { display: none !important; }.slide::after { display: block; }
 }
+
+/* Minimal monochrome presentation theme */
+:root {
+  --ink: #111;
+  --ink-2: #191919;
+  --muted: #686868;
+  --paper: #f7f7f4;
+  --paper-2: #eeeeea;
+  --line: #d6d6d0;
+  --teal: #111;
+  --teal-2: #111;
+  --lime: #f2f2ee;
+  --orange: #c95735;
+  --yellow: #a8a8a0;
+  --white: #fff;
+  --shadow: 0 12px 30px rgba(0, 0, 0, .07);
+}
+body { background: #111; color: var(--ink); }
+.slide { background: linear-gradient(180deg, #fbfbf8 0%, #f1f1ed 100%); }
+.slide::after { color: #707070; }
+.kicker { color: #222; border-left: 4px solid var(--orange); padding-left: 10px; letter-spacing: .13em; }
+h1, h2, h3 { color: #111; }
+h3 { color: #222; }
+.accent { color: #111; text-decoration: underline; text-decoration-color: var(--orange); text-decoration-thickness: .12em; text-underline-offset: .1em; }
+.rule { background: var(--orange); height: 4px; width: 58px; }
+.hero { background: none; }
+.hero-mark { background: #111; opacity: 1; box-shadow: none; }
+.hero-mark::before { color: #111; background: #f7f7f4; }
+.hero-mark::after { color: #777; }
+.card, .card.orange { color: #111; background: #fff; border-color: #d4d4ce; box-shadow: 0 6px 18px rgba(0, 0, 0, .04); }
+.card.dark, .card.teal { color: #fff; background: #111; border-color: #111; }
+.card.dark h3, .card.teal h3 { color: #fff; }
+.card.orange h3 { color: #111; }
+.card.dark [style*="color"], .card.teal [style*="color"] { color: #fff !important; }
+.pill { color: #222; background: #ecece8; border: 1px solid #d0d0ca; }
+.pill.orange { color: #8d3b26; background: #fae6de; border-color: #e2b2a1; }
+.pill.dark { color: #fff; background: #222; border-color: #222; }
+.score-box { background: #111; border-left-color: #fff; box-shadow: none; }
+.score-box.private { border-left-color: var(--orange); }
+.score-box strong, .score-box.private strong { color: #fff !important; }
+.score-box small { color: #b8b8b0; }
+.flow .node { background: #fff; border-color: #d4d4ce; box-shadow: none; }
+.flow .arrow { color: var(--orange); }
+.layer-label { background: #111; }
+.layer-bar { background: #fff; border-color: #d4d4ce; }
+.layer-bar strong { color: #222; }
+.code { color: #f4f4ef; background: #111; border-radius: 10px; box-shadow: none; }
+.code .key, .code .fn { color: #fff; }
+.code .num { color: #ef997a; }
+.code .comment { color: #999; }
+.matrix { background: #fff; }
+.matrix th { background: #111; color: #fff; }
+.matrix tr:nth-child(even) td { background: #f0f0ec; }
+.bar-track { background: #deded8; }
+.bar-fill { background: #111; }
+.bar-fill.bad { background: var(--orange); }
+.quote { color: #111; background: #ecece8; border-left-color: #111; }
+.quote.orange { color: #8d3b26; background: #fae6de; border-left-color: var(--orange); }
+.callout { background: #fff; border-color: #d4d4ce; }
+.callout .icon { color: var(--orange); }
+.metric { border-bottom-color: #d6d6d0; }
+.metric strong { color: #111; }
+.nav { color: #eee; background: rgba(17, 17, 17, .97); }
+.nav button { color: #fff; border-color: #555; }
+.nav button:hover { color: #111; background: #fff; }
+.progress { background: #444; }
+.progress i { background: var(--orange); }
+.counter { color: #fff; }
+.hint { color: #aaa; }
+.notes { color: #fff; background: #111; border-color: #555; }
+.notes h3 { color: #fff; }
+.notes p { color: #ddd; }
+.close { color: #fff; }
+.footer-source { color: #777; }
+.qa h1 .accent { text-decoration: none; }
+.card:not(.dark):not(.teal) [style*="color:#55ead6"],
+.card:not(.dark):not(.teal) [style*="color:#b7d2ce"],
+.card:not(.dark):not(.teal) [style*="color:#c6dfdb"],
+.card:not(.dark):not(.teal) [style*="color:var(--lime)"] { color: #111 !important; }
 </style>
 </head>
 <body>

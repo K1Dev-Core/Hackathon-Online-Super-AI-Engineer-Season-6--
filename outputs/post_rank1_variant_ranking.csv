@@ -1,0 +1,4 @@
+rank,filename,positive_labels,delta_vs_current_leader,status,observed_public_score,submission_instruction,rationale
+1,submission_post_rank1_01_current_leader.csv,2810,0,APPROVED_PRIMARY,0.96230,SUBMIT_THIS_ONLY,Exact current public rank-1 labels; Id=9816 is included.
+2,submission_post_rank1_02_previous_champion.csv,2809,-1,FALLBACK_ONLY,0.96193,DO_NOT_USE_UNLESS_REPRODUCING_OLD_SCORE,"Exact earlier champion, retained only for reproducibility."
+3,submission_post_rank1_03_rejected_payload132.csv,2811,1,REJECTED_FALSE_POSITIVE_RISK,not_uploaded,DO_NOT_SUBMIT,Id=1145 has normal stream-2 packet siblings; fails the precision gate.

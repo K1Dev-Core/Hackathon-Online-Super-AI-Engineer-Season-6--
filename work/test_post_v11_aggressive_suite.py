@@ -54,9 +54,9 @@ def main() -> None:
         assert digest(CANDIDATES / row.filename) == row.sha256
 
     scores = pd.read_csv(OUTPUTS / "post_v11_aggressive_observed_scores.csv")
-    assert scores["kaggle_ref"].tolist() == [54809776, 54809544]
-    assert scores["public_f1"].tolist() == [0.96304, 0.96304]
-    assert scores["private_f1"].tolist() == [0.97266, 0.97232]
+    assert scores["kaggle_ref"].tolist() == [54809842, 54809776, 54809544]
+    assert scores["public_f1"].tolist() == [0.96304, 0.96304, 0.96304]
+    assert scores["private_f1"].tolist() == [0.97300, 0.97266, 0.97232]
 
     checksums: dict[str, str] = {}
     for line in (OUTPUTS / "post_v11_aggressive_checksums.sha256").read_text().splitlines():

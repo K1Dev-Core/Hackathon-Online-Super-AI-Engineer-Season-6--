@@ -10,11 +10,12 @@
 | `SuperAI6_IoT_Attack_Detection_Report_TH.md` | แก้เนื้อหาต้นฉบับ | canonical technical content |
 | `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.pptx` | พรีเซนต์ | 17 slides, 16:9, speaker notes ฝังในไฟล์ |
 | `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.pdf` | เปิดสำรอง | PDF ที่ตรวจ Thai glyph และ layout แล้ว |
+| `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.html` | พรีเซนต์ผ่าน browser | ไฟล์เดียวจบ มี notes, keyboard, fullscreen, touch และ print/PDF |
 | `SuperAI6_Presentation_Speaker_Notes_TH.md` | ซ้อมพูด | script แยกตาม slide |
 
 ## ลำดับนำเสนอ 10 นาที
 
-ใช้ครบ 17 slides เวลาประมาณ 30–40 วินาทีต่อหน้า:
+ใช้ HTML deck ครบ 16 slides เวลาประมาณ 30–40 วินาทีต่อหน้า:
 
 1. ปัญหา Normal-only และเป้าหมาย F1
 2. Attack landscape และ feature layers
@@ -34,7 +35,7 @@
 - Stream structure เพิ่ม `Id=9816` และทำคะแนนดีขึ้น
 - PCAP support ต้องมี normal falsifier และ context
 - Public-best ไม่ใช่ Private-best เสมอ
-- ผลสุดท้าย Public `0.96267`, Private `0.97198`
+- ผลล่าสุดที่ยืนยัน: Public `0.96824`, Private `0.97748`
 
 ## Demo สำหรับ Q&A
 
@@ -55,4 +56,3 @@ python outputs/predict_final_model.py \
 ## หมายเหตุการแก้ไข
 
 PPTX ใช้ข้อความเป็น transparent PNG layers เพื่อรับประกัน Thai rendering ข้าม LibreOffice/PowerPoint ส่วน speaker notes ยังเป็นข้อความจริง แก้เนื้อหาใน `tools/generate_slides.js` แล้วรัน generator ใหม่
-

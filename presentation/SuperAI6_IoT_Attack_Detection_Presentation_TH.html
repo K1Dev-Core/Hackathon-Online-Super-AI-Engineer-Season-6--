@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SuperAI6 | IoT Attack Detection</title>
+<style>
+:root {
+  --ink: #10202b;
+  --ink-2: #173b4d;
+  --muted: #607682;
+  --paper: #f5f8f5;
+  --paper-2: #e9f1ee;
+  --line: #cbdad6;
+  --teal: #087f79;
+  --teal-2: #0caaa0;
+  --lime: #b7df42;
+  --orange: #ef7447;
+  --yellow: #f2c94c;
+  --white: #fff;
+  --shadow: 0 18px 50px rgba(16, 32, 43, .14);
+  --radius: 22px;
+  --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --sans: Tahoma, "Arial Unicode MS", "Noto Sans Thai", sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: #0b202b; color: var(--ink); font-family: var(--sans); }
+body { overflow: hidden; }
+button, a { font: inherit; }
+button { cursor: pointer; }
+.deck { position: relative; width: 100vw; height: 100vh; background: var(--paper); overflow: hidden; }
+.slide {
+  position: absolute; inset: 0; display: none; overflow: auto; padding: 6.2vh 7.2vw 7.5vh;
+  background:
+    radial-gradient(circle at 91% 9%, rgba(183,223,66,.25), transparent 24%),
+    linear-gradient(135deg, var(--paper) 0%, #f8fbf8 52%, var(--paper-2) 100%);
+}
+.slide.active { display: block; animation: arrive .42s ease both; }
+@keyframes arrive { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.slide::after { content: attr(data-number); position: absolute; right: 7.2vw; bottom: 3.2vh; color: #82999a; font: 700 12px var(--mono); letter-spacing: .14em; }
+.kicker { color: var(--teal); font: 800 12px var(--mono); letter-spacing: .18em; text-transform: uppercase; }
+h1, h2, h3, p { margin-top: 0; }
+h1 { max-width: 920px; margin: 1.5vh 0 2.5vh; color: var(--ink); font-size: clamp(30px, 4.4vw, 68px); line-height: 1.03; letter-spacing: -.045em; }
+h2 { max-width: 920px; margin: 1.2vh 0 3vh; font-size: clamp(25px, 3.2vw, 47px); line-height: 1.08; letter-spacing: -.035em; }
+h3 { color: var(--teal); font-size: clamp(16px, 1.35vw, 22px); line-height: 1.18; }
+p, li { font-size: clamp(15px, 1.35vw, 21px); line-height: 1.46; }
+.lead { max-width: 820px; color: var(--muted); font-size: clamp(18px, 1.75vw, 28px); line-height: 1.35; }
+.small { color: var(--muted); font-size: 13px; line-height: 1.45; }
+.muted { color: var(--muted); }
+.accent { color: var(--teal); }
+.orange { color: var(--orange); }
+.lime { color: #5b7b00; }
+.strong { font-weight: 800; color: var(--ink); }
+.rule { width: 74px; height: 6px; border-radius: 9px; background: var(--orange); margin: 3vh 0; }
+.grid { display: grid; gap: 18px; }
+.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.card { background: rgba(255,255,255,.76); border: 1px solid var(--line); border-radius: var(--radius); padding: 23px; box-shadow: 0 8px 24px rgba(16,32,43,.05); }
+.card.dark { color: #e9f4f1; background: var(--ink-2); border-color: transparent; }
+.card.teal { color: #edfffb; background: linear-gradient(135deg, var(--teal), #07564f); border-color: transparent; }
+.card.orange { background: #fff5ee; border-color: #f2b49c; }
+.card h3 { margin-bottom: 10px; }
+.card.dark h3, .card.teal h3 { color: var(--lime); }
+.card p, .card li { margin-bottom: 0; font-size: clamp(14px, 1.18vw, 18px); }
+.card ul { padding-left: 1.1em; margin: 8px 0 0; }
+.pill { display: inline-flex; align-items: center; gap: 8px; border-radius: 99px; padding: 7px 12px; color: var(--teal); background: #d8f1eb; font-size: 13px; font-weight: 800; }
+.pill.orange { color: #9a3f24; background: #ffe2d4; }
+.pill.dark { color: var(--lime); background: #234452; }
+.score-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 230px)); gap: 16px; margin: 28px 0; }
+.score-box { padding: 22px; color: #f0fbf8; background: var(--ink-2); border-left: 7px solid var(--teal-2); border-radius: 16px; box-shadow: var(--shadow); }
+.score-box.private { border-left-color: var(--lime); }
+.score-box small { display: block; color: #a8c3c4; font: 800 11px var(--mono); letter-spacing: .15em; }
+.score-box strong { display: block; margin-top: 7px; color: #55ead6; font: 800 clamp(30px, 3.5vw, 54px)/1 var(--mono); }
+.score-box.private strong { color: var(--lime); }
+.hero { display: flex; flex-direction: column; justify-content: center; min-height: 100%; padding-right: 10vw; background: radial-gradient(circle at 80% 50%, rgba(8,127,121,.18), transparent 25%); }
+.hero h1 { max-width: 940px; font-size: clamp(42px, 7vw, 108px); }
+.hero .lead { max-width: 850px; }
+.hero-meta { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 26px; color: var(--muted); font-size: 14px; }
+.hero-mark { position: absolute; top: 8vh; right: 8vw; width: min(24vw, 280px); aspect-ratio: 1; border-radius: 50%; background: conic-gradient(from 20deg, var(--lime), var(--teal-2), var(--orange), var(--lime)); opacity: .95; filter: saturate(.9); }
+.hero-mark::before { content: "MQTT"; position: absolute; inset: 15%; display: grid; place-items: center; border-radius: 50%; color: var(--white); background: var(--ink); font: 800 clamp(18px, 2vw, 30px) var(--mono); letter-spacing: .12em; }
+.hero-mark::after { content: "TCP  /  IoT"; position: absolute; left: 50%; bottom: -34px; transform: translateX(-50%); color: var(--teal); font: 800 12px var(--mono); white-space: nowrap; letter-spacing: .12em; }
+.split { display: grid; grid-template-columns: 1.08fr .92fr; gap: 4vw; align-items: center; min-height: 76vh; }
+.number-list { counter-reset: item; list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+.number-list li { display: grid; grid-template-columns: 40px 1fr; gap: 13px; align-items: start; margin: 0; }
+.number-list li::before { counter-increment: item; content: counter(item, decimal-leading-zero); color: var(--orange); font: 800 15px var(--mono); padding-top: 3px; }
+.flow { display: flex; align-items: stretch; gap: 10px; margin: 30px 0; }
+.flow .node { flex: 1; min-height: 128px; display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 17px; border-radius: 17px; background: #fff; border: 1px solid var(--line); }
+.flow .node strong { font-size: 16px; }
+.flow .node span { color: var(--muted); font-size: 13px; line-height: 1.35; }
+.flow .arrow { align-self: center; color: var(--orange); font: 800 24px var(--mono); }
+.layer { display: grid; grid-template-columns: 115px 1fr; gap: 20px; align-items: center; margin: 15px 0; }
+.layer-label { padding: 14px 10px; text-align: center; color: white; background: var(--ink-2); border-radius: 14px; font: 800 14px var(--mono); }
+.layer-bar { padding: 20px; border-radius: 15px; background: white; border: 1px solid var(--line); }
+.layer-bar strong { display: block; margin-bottom: 6px; color: var(--teal); }
+.layer-bar span { color: var(--muted); font-size: 14px; }
+.code { padding: 20px; overflow: auto; color: #eaf8f2; background: #122c38; border-radius: 16px; font: 13px/1.6 var(--mono); box-shadow: var(--shadow); }
+.code .key { color: #a9e95e; }.code .fn { color: #60ddd1; }.code .num { color: #ffad76; }.code .comment { color: #8ea9a8; }
+.matrix { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: 14px; background: white; font-size: clamp(12px, 1.05vw, 16px); }
+.matrix th { color: white; background: var(--ink-2); text-align: left; font-size: 12px; letter-spacing: .08em; }
+.matrix th, .matrix td { padding: 13px 15px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.matrix tr:last-child td { border-bottom: 0; }.matrix tr:nth-child(even) td { background: #f2f7f5; }
+.bar-chart { display: grid; gap: 14px; margin: 20px 0; }
+.bar-row { display: grid; grid-template-columns: 255px 1fr 80px; gap: 12px; align-items: center; }
+.bar-label { color: var(--muted); font-size: 13px; }.bar-track { height: 17px; overflow: hidden; border-radius: 20px; background: #dce9e5; }.bar-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--teal), var(--teal-2)); }.bar-fill.bad { background: linear-gradient(90deg, var(--orange), #f3aa47); }.bar-val { color: var(--ink); font: 800 13px var(--mono); text-align: right; }
+.quote { margin: 28px 0; padding: 23px 27px; color: #064c48; background: #dff5ee; border-left: 7px solid var(--teal); border-radius: 0 16px 16px 0; font-size: clamp(18px, 1.8vw, 28px); font-weight: 800; line-height: 1.35; }
+.quote.orange { color: #813b24; background: #ffeadf; border-left-color: var(--orange); }
+.callout { display: flex; gap: 15px; align-items: flex-start; padding: 17px 19px; margin-top: 18px; border-radius: 15px; background: #fff; border: 1px solid var(--line); }.callout .icon { color: var(--orange); font: 800 22px var(--mono); }.callout p { margin: 0; font-size: 15px; }
+.metric { display: flex; justify-content: space-between; align-items: baseline; padding: 15px 0; border-bottom: 1px solid rgba(203,218,214,.8); }.metric:last-child { border-bottom: 0; }.metric strong { color: var(--teal); font: 800 26px var(--mono); }.metric span { color: var(--muted); font-size: 14px; }
+.footer-source { position: absolute; left: 7.2vw; bottom: 3.2vh; color: #82999a; font-size: 11px; }
+.nav { position: fixed; z-index: 10; left: 0; right: 0; bottom: 0; display: flex; align-items: center; gap: 13px; padding: 10px 18px; color: #d6e9e3; background: rgba(10,30,41,.94); backdrop-filter: blur(12px); }
+.nav button { width: 36px; height: 30px; border: 1px solid #41606b; border-radius: 8px; color: #e6f7ef; background: transparent; font-weight: 800; }.nav button:hover { color: var(--ink); background: var(--lime); }
+.progress { height: 5px; flex: 1; overflow: hidden; border-radius: 9px; background: #294551; }.progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--teal-2), var(--lime)); transition: width .3s ease; }
+.counter { min-width: 58px; font: 800 12px var(--mono); text-align: center; }.hint { color: #a8c2c2; font-size: 11px; }
+.notes { position: fixed; z-index: 12; right: 18px; top: 18px; width: min(390px, 85vw); max-height: 76vh; overflow: auto; display: none; padding: 21px; color: #eaf7f2; background: rgba(15,43,55,.98); border: 1px solid #426b74; border-radius: 17px; box-shadow: var(--shadow); }.notes.show { display: block; }.notes h3 { margin: 0 0 10px; color: var(--lime); font-size: 17px; }.notes p { margin-bottom: 8px; color: #d4e5e0; font-size: 14px; line-height: 1.5; }
+.keytag { display: inline-block; padding: 3px 7px; border: 1px solid #9bbab5; border-radius: 5px; color: var(--ink-2); background: #ecf5f2; font: 800 11px var(--mono); }
+.close { position: absolute; right: 10px; top: 8px; border: 0; color: #d4e5e0; background: transparent; font-size: 22px; }
+.two-col-list { columns: 2; column-gap: 40px; padding-left: 1.1em; }.two-col-list li { break-inside: avoid; margin-bottom: 10px; }
+.qa { display: grid; place-items: center; min-height: 73vh; text-align: center; }.qa h1 { max-width: 780px; }.qa p { color: var(--muted); }
+@media (max-width: 800px) {
+  body { overflow: auto; }.deck { height: auto; min-height: 100vh; }.slide { position: relative; min-height: 100vh; padding: 34px 24px 72px; }.slide:not(.active) { display: none; }.hero-mark { width: 120px; top: 50px; right: 25px; }.hero { padding-right: 0; min-height: 78vh; }.split, .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }.flow { flex-direction: column; }.flow .arrow { transform: rotate(90deg); }.bar-row { grid-template-columns: 1fr; gap: 5px; }.bar-val { text-align: left; }.layer { grid-template-columns: 78px 1fr; gap: 10px; }.two-col-list { columns: 1; }.nav { position: fixed; }.hint { display: none; }.footer-source { left: 24px; }.slide::after { right: 24px; }.score-grid { grid-template-columns: 1fr 1fr; }.card { padding: 18px; }
+}
+@media print {
+  body { overflow: visible; background: white; }.deck { height: auto; overflow: visible; }.slide, .slide.active { position: relative; display: block; min-height: 100vh; page-break-after: always; overflow: hidden; }.nav, .notes { display: none !important; }.slide::after { display: block; }
+}
+</style>
+</head>
+<body>
+<main class="deck" aria-live="polite">
+  <section class="slide active" data-number="01" data-title="เปิดเรื่อง">
+    <div class="hero">
+      <div class="hero-mark" aria-hidden="true"></div>
+      <div class="kicker">SUPER AI ENGINEER SEASON 6 / IOT SECURITY</div>
+      <h1>แยก Attack ออกจาก Normal<br><span class="accent">ด้วยความหมายของ Protocol</span></h1>
+      <div class="rule"></div>
+      <p class="lead">แนวทางตรวจจับ IoT attack แบบ Normal-only ด้วย TCP/MQTT rules, stream structure และ controlled evidence</p>
+      <div class="score-grid">
+        <div class="score-box"><small>PUBLIC F1 / CURRENT BEST</small><strong>0.96824</strong></div>
+        <div class="score-box private"><small>PRIVATE F1 / CURRENT BEST</small><strong>0.97748</strong></div>
+      </div>
+      <div class="hero-meta"><span>610686-วชิรวิทย์</span><span>18 กรกฎาคม 2569</span><span>submission_v27_stream3_5_payload.csv</span></div>
+    </div>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>เปิดด้วยประเด็นสำคัญ: นี่ไม่ใช่ binary classification ปกติ เพราะ train มี Normal เป็นหลัก จึงใช้ protocol meaning เพื่อสร้าง high-precision detector.</p></aside>
+  </section>
+
+  <section class="slide" data-number="02" data-title="ผลลัพธ์">
+    <div class="kicker">01 / RESULT FIRST</div>
+    <h2>ผลลัพธ์ที่ยืนยันด้วย leaderboard</h2>
+    <p class="lead">v27 เป็นไฟล์ที่ดีที่สุดในชุดที่ทดสอบจริง. ไม่อ้างอันดับหนึ่งโดยไม่มีหลักฐาน.</p>
+    <div class="grid grid-3" style="margin-top:30px">
+      <div class="card teal"><h3>คะแนนปัจจุบัน</h3><p style="font:800 38px var(--mono);color:var(--lime)">0.97748</p><p>Private F1</p></div>
+      <div class="card dark"><h3>Public feedback</h3><p style="font:800 38px var(--mono);color:#55ead6">0.96824</p><p>Public F1</p></div>
+      <div class="card orange"><h3>ขนาดคำตอบ</h3><p style="font:800 38px var(--mono)">2,854</p><p>positive labels / 10,000 rows</p></div>
+    </div>
+    <div class="quote">หลักคิด: คะแนนสูงไม่ได้มาจากการเติม label ให้มากที่สุด. มาจากการเติมเฉพาะ family ที่มี context สนับสนุน.</div>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>ย้ำว่าคะแนน v27 เป็นคะแนนจริงที่ผู้ใช้ส่งและรายงานกลับมา. Public/Private ต่างกัน จึงไม่เลือกจาก Public อย่างเดียว.</p></aside>
+  </section>
+
+  <section class="slide" data-number="03" data-title="โจทย์">
+    <div class="kicker">02 / PROBLEM</div>
+    <h2>ทำไมโจทย์นี้ยาก</h2>
+    <div class="split">
+      <div>
+        <ol class="number-list">
+          <li><span><b>Train ไม่ได้ให้ attack labels</b><br><span class="muted">ต้องสร้าง Normal profile แล้วหา deviation ที่มีความหมาย</span></span></li>
+          <li><span><b>Rare-normal คล้าย attack</b><br><span class="muted">packet แปลกหนึ่งแถวไม่เท่ากับการโจมตี</span></span></li>
+          <li><span><b>Attack บางชนิดใช้ format ปกติ</b><br><span class="muted">ความผิดปกติอยู่ที่ลำดับ, stream, frequency หรือ state</span></span></li>
+          <li><span><b>F1 ลงโทษ false positive</b><br><span class="muted">baseline สูงแล้ว candidate กว้างทำคะแนนตกเร็ว</span></span></li>
+        </ol>
+      </div>
+      <div class="card dark">
+        <h3>โจทย์จริง</h3>
+        <p style="font-size:22px;line-height:1.35">ไม่ใช่ “ทายว่าแถวนี้เป็น attack ไหม” อย่างเดียว</p>
+        <p style="margin-top:20px;color:#b7d2ce">แต่คือ “แถวนี้เป็นส่วนหนึ่งของ attack family หรือเป็น rare-normal ที่ต้องปล่อยไว้”</p>
+        <div class="pill dark" style="margin-top:22px">ONE-CLASS + CONTEXT</div>
+      </div>
+    </div>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>อธิบายความต่างจาก supervised classification: ไม่มี positive train labels ให้เรียน boundary โดยตรง. ต้องใช้ domain knowledge และการทดสอบแบบ controlled.</p></aside>
+  </section>
+
+  <section class="slide" data-number="04" data-title="ข้อมูล">
+    <div class="kicker">03 / DATA MAP</div>
+    <h2>ข้อมูลมี 23 features แต่ความหมายอยู่คนละชั้น</h2>
+    <div class="grid grid-3" style="margin-top:26px">
+      <div class="card"><span class="pill">FRAME</span><h3 style="margin-top:18px">Packet envelope</h3><p>frame length และ protocol stack บอกระดับโครงสร้างของ packet.</p></div>
+      <div class="card"><span class="pill orange">TCP</span><h3 style="margin-top:18px">Transport state</h3><p>stream, payload, window และ flags บอก state, flow และ stack behavior.</p></div>
+      <div class="card"><span class="pill dark">MQTT</span><h3 style="margin-top:18px">Application intent</h3><p>message type, keep-alive, credentials, topic และ payload บอก transaction.</p></div>
+    </div>
+    <div class="grid grid-2" style="margin-top:22px">
+      <div class="card dark"><div class="metric"><span>X_train</span><strong>100,000</strong></div><div class="metric"><span>X_test</span><strong>10,000</strong></div><div class="metric"><span>features</span><strong>23</strong></div></div>
+      <div class="card"><h3>Missing ไม่ได้แปลว่าเสีย</h3><p>MQTT fields ว่างเมื่อ packet ไม่มี MQTT layer. เก็บเป็น missing by design, ไม่เติมค่ามั่ว.</p><p class="small" style="margin-top:15px">tcp.stream ใช้เป็น context ภายใน capture ไม่ใช้เป็น identity ข้ามไฟล์.</p></div>
+    </div>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>ชี้ให้เห็นว่าข้อมูลต้องอ่านแบบ protocol stack. MQTT missing ใน TCP-only packet เป็นเรื่องปกติ ไม่ใช่ data corruption.</p></aside>
+  </section>
+
+  <section class="slide" data-number="05" data-title="Attack surface">
+    <div class="kicker">04 / ATTACK SURFACE</div>
+    <h2>ห้า attack families อยู่คนละระดับ</h2>
+    <table class="matrix">
+      <thead><tr><th>Family</th><th>ชั้นที่เห็น</th><th>สัญญาณหลัก</th><th>กฎที่ใช้</th></tr></thead>
+      <tbody>
+        <tr><td><b>Dictionary</b></td><td>MQTT CONNECT</td><td>keep-alive / credential-length pattern</td><td>CONNECT type 1 + keep-alive 60/3600</td></tr>
+        <tr><td><b>Will payload</b></td><td>MQTT session</td><td>will flags, username/password, payload</td><td>context + structural residual</td></tr>
+        <tr><td><b>Invalid subscription</b></td><td>MQTT transaction</td><td>SUBSCRIBE / SUBACK abnormality</td><td>message type 8/9</td></tr>
+        <tr><td><b>Publish</b></td><td>MQTT payload</td><td>message length / TCP window family</td><td>type 3 + payload signatures</td></tr>
+        <tr><td><b>SYN Flood</b></td><td>TCP state</td><td>SYN burst, window 512, no ACK</td><td>frame 54 + flags + window</td></tr>
+      </tbody>
+    </table>
+    <div class="quote orange">อย่าบังคับทุก attack ให้ตอบด้วย feature แบบเดียว. MQTT attack ใช้ semantics; SYN Flood ใช้ TCP state.</div>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>ไล่จาก application layer ลง transport layer. นี่คือเหตุผลที่ anomaly score เดี่ยวไม่พอ.</p></aside>
+  </section>
+
+  <section class="slide" data-number="06" data-title="Pipeline">
+    <div class="kicker">05 / DETECTION PIPELINE</div>
+    <h2>Pipeline แบบ precision-first</h2>
+    <div class="flow">
+      <div class="node"><strong>01 · Normal profile</strong><span>ค่าที่เกิดใน X_train และ known packet shapes</span></div><div class="arrow">→</div>
+      <div class="node"><strong>02 · Protocol rules</strong><span>TCP/MQTT signatures ที่มีความหมาย</span></div><div class="arrow">→</div>
+      <div class="node"><strong>03 · Context gate</strong><span>stream family, payload, hard negatives</span></div><div class="arrow">→</div>
+      <div class="node"><strong>04 · Controlled probe</strong><span>เปลี่ยนทีละกลุ่ม, เก็บ score delta</span></div>
+    </div>
+    <div class="grid grid-3" style="margin-top:30px">
+      <div class="card"><h3>Rule union</h3><p>เพิ่ม recall ด้วย OR หลายกฎ.</p></div>
+      <div class="card"><h3>Exclusion</h3><p>ตัด family ที่พิสูจน์ว่าเป็น normal.</p></div>
+      <div class="card"><h3>Rollback</h3><p>ทุก candidate เป็น delta แยกไฟล์. ย้อนกลับได้.</p></div>
+    </div>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>เน้นว่า pipeline ไม่ได้ทำ random search. ทุกการเปลี่ยนมี hypothesis, changed Id list, checksum และผลจริง.</p></aside>
+  </section>
+
+  <section class="slide" data-number="07" data-title="Rule engine">
+    <div class="kicker">06 / RULE ENGINE</div>
+    <h2>กฎหลัก: แปลง protocol meaning เป็น label</h2>
+    <div class="split">
+      <div class="code"><span class="comment"># high-precision anchors</span><br>
+<span class="key">attack_stack</span> = ~test[<span class="str">"tcp.window_size"</span>].isin(normal_windows)<br>
+<span class="key">syn_flood</span> = (<br>
+&nbsp;&nbsp;test[<span class="str">"frame.len"</span>].eq(<span class="num">54</span>)<br>
+&nbsp;&nbsp;&amp; test[<span class="str">"tcp.window_size"</span>].eq(<span class="num">512</span>)<br>
+&nbsp;&nbsp;&amp; test[<span class="str">"tcp.flags.syn"</span>].eq(<span class="num">1</span>)<br>
+&nbsp;&nbsp;&amp; test[<span class="str">"tcp.flags.ack"</span>].eq(<span class="num">0</span>)<br>
+)<br>
+<span class="key">dictionary_connect</span> = (<br>
+&nbsp;&nbsp;test[<span class="str">"mqtt.msgtype"</span>].eq(<span class="num">1</span>)<br>
+&nbsp;&nbsp;&amp; test[<span class="str">"mqtt.kalive"</span>].isin([<span class="num">60</span>, <span class="num">3600</span>])<br>
+)<br>
+<span class="key">invalid_subscription</span> = test[<span class="str">"mqtt.msgtype"</span>].isin([<span class="num">8</span>, <span class="num">9</span>])</div>
+      <div>
+        <div class="card"><h3>Anchors ที่ใช้</h3><ul><li>unseen TCP window</li><li>new packet shape</li><li>SYN flood signature</li><li>dictionary CONNECT</li><li>invalid subscription</li><li>PUBLISH length family</li></ul></div>
+        <div class="callout"><div class="icon">!</div><p><b>OR ช่วย recall</b> แต่ OR กว้างเกินไปทำ FP. จึงต้องตามด้วย context gate และ exclusion.</p></div>
+      </div>
+    </div>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>แสดง code จริงจาก deterministic model. อธิบายว่ากฎแต่ละตัวจับ attack family คนละแบบ.</p></aside>
+  </section>
+
+  <section class="slide" data-number="08" data-title="Hard negatives">
+    <div class="kicker">07 / FALSIFICATION</div>
+    <h2>Hard negative สำคัญกว่า model confidence</h2>
+    <div class="grid grid-2">
+      <div class="card orange"><span class="pill orange">REJECTED FAMILY</span><h3 style="margin-top:18px">PINGRESP false positive</h3><p>pseudo-model ให้ probability สูง แต่ probe พบว่า pattern นี้เป็น normal.</p><div class="code" style="margin-top:17px;padding:14px;font-size:12px">frame.len = 56<br>tcp.window_size = 253<br>mqtt.msgtype = 13</div></div>
+      <div class="card teal"><span class="pill dark">KEEP</span><h3 style="margin-top:18px">PUBLISH window 256</h3><p>ผ่าน controlled probes หลายรอบ และมี context เป็น attack capture family.</p><div class="code" style="margin-top:17px;padding:14px;font-size:12px">mqtt.msgtype = 3<br>tcp.window_size = 256<br>family-complete</div></div>
+    </div>
+    <div class="quote">ถ้า score สวน hypothesis ให้ยกเลิก hypothesis. อย่าหาเหตุผลมาปกป้อง candidate.</div>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>เล่าเคส PINGRESP: model มั่นใจไม่ได้แปลว่าถูก. Leaderboard ทำหน้าที่ falsification test.</p></aside>
+  </section>
+
+  <section class="slide" data-number="09" data-title="Stream structure">
+    <div class="kicker">08 / STRUCTURAL COMPLETION</div>
+    <h2>เติมแถวที่หายด้วย stream structure</h2>
+    <div class="split">
+      <div>
+        <div class="card dark">
+          <h3>SYN family audit</h3>
+          <div class="metric"><span>streams ที่พบ</span><strong>599</strong></div>
+          <div class="metric"><span>ช่วง stream</span><strong>0–599</strong></div>
+          <div class="metric"><span>ช่องว่าง</span><strong style="color:var(--orange)">194</strong></div>
+          <p style="margin-top:16px;color:#b9d2ce">ใน stream 194 มี normal template 9 packets และ packet ส่วนเกิน 1 แถว: <b style="color:var(--lime)">Id=9816</b></p>
+        </div>
+      </div>
+      <div>
+        <h3>Hypothesis → probe → result</h3>
+        <div class="flow" style="display:grid;grid-template-columns:1fr;gap:10px">
+          <div class="node"><strong>Hypothesis</strong><span>แถวส่วนเกินคือ SYN attack packet</span></div>
+          <div class="arrow" style="text-align:center">↓</div>
+          <div class="node"><strong>Controlled change</strong><span>เพิ่ม Id=9816 แถวเดียว</span></div>
+          <div class="arrow" style="text-align:center">↓</div>
+          <div class="node"><strong>Observed</strong><span>Public 0.96193 → 0.96230</span></div>
+        </div>
+      </div>
+    </div>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>ตัวอย่างนี้ทำให้เห็น value ของ structural reasoning: ไม่ได้เติมทั้ง stream แต่เติมช่องว่างที่มี family support ชัด.</p></aside>
+  </section>
+
+  <section class="slide" data-number="10" data-title="Payload context">
+    <div class="kicker">09 / PAYLOAD CONTEXT</div>
+    <h2>v27 เพิ่ม recall แบบแคบ ไม่กวาดทั้ง dataset</h2>
+    <div class="grid grid-2">
+      <div class="card">
+        <h3>ฐานที่ใช้</h3>
+        <p>v25 ยืนยัน payload rows ใน stream 2 และ 4. จากนั้นตรวจ stream 3 และ 5 ที่มี attack fraction สูงและมี MQTT payload context เหมือน family ที่ยืนยันแล้ว.</p>
+        <div class="bar-chart">
+          <div class="bar-row"><span class="bar-label">stream 3</span><div class="bar-track"><div class="bar-fill" style="width:85.9%"></div></div><span class="bar-val">85.9%</span></div>
+          <div class="bar-row"><span class="bar-label">stream 5</span><div class="bar-track"><div class="bar-fill" style="width:86.0%"></div></div><span class="bar-val">86.0%</span></div>
+        </div>
+      </div>
+      <div class="card teal"><h3>v27 change set</h3><div class="metric"><span>เพิ่มจาก v25</span><strong>10</strong></div><div class="metric"><span>positive labels</span><strong>2,854</strong></div><div class="metric"><span>Public gain vs v25</span><strong style="color:var(--lime)">+.00075</strong></div><p style="margin-top:16px;color:#c6dfdb">ใช้ payload + stream context. ไม่ย้ายกฎไป streams อื่นแบบเหมารวม.</p></div>
+    </div>
+    <div class="quote">Context มาก่อน shape. Shape เหมือนกัน แต่ stream คนละ family อาจมี label คนละแบบ.</div>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>อธิบาย v27 ว่าเป็นการเพิ่ม 10 แถวจาก streams 3/5 ที่ผ่าน context gate. ไม่ใช่การติด label ทุก MQTT payload.</p></aside>
+  </section>
+
+  <section class="slide" data-number="11" data-title="Score progression">
+    <div class="kicker">10 / LEADERBOARD EXPERIMENTS</div>
+    <h2>คะแนนขึ้นเมื่อ candidate homogeneous</h2>
+    <table class="matrix">
+      <thead><tr><th>Version</th><th>Change</th><th>Public</th><th>Private</th><th>Decision</th></tr></thead>
+      <tbody>
+        <tr><td><b>v25</b></td><td>stream 2 + stream 4 payload</td><td>0.96749</td><td>0.97611</td><td><span class="pill">keep</span></td></tr>
+        <tr><td><b>v27</b></td><td>stream 3 + stream 5 payload</td><td><b>0.96824</b></td><td><b>0.97748</b></td><td><span class="pill dark">current best</span></td></tr>
+        <tr><td>v29</td><td>wide high-fraction CONNECT family</td><td>0.96348</td><td>0.97329</td><td><span class="pill orange">reject</span></td></tr>
+        <tr><td>v30</td><td>13 CONNECT handshake rows</td><td>0.96551</td><td>0.97586</td><td><span class="pill orange">reject</span></td></tr>
+        <tr><td>v31</td><td>23 CONNECT handshake rows</td><td>0.96416</td><td>0.97393</td><td><span class="pill orange">reject</span></td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:18px">คะแนน v27, v30, v31 เป็น leaderboard results ที่มีการรายงานจริง. ไม่ใช้ offline proxy แทน Kaggle score.</p>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>ชี้ให้เห็น false-positive zone ของ CONNECT handshake. v30/v31 เพิ่ม label แต่คะแนนลดทั้ง Public และ Private.</p></aside>
+  </section>
+
+  <section class="slide" data-number="12" data-title="Why v30/v31 failed">
+    <div class="kicker">11 / FAILURE ANALYSIS</div>
+    <h2>ทำไมเพิ่ม CONNECT แล้วคะแนนตก</h2>
+    <div class="split">
+      <div class="card orange"><h3>สิ่งที่เห็นใน feature</h3><div class="code" style="background:#492d26;margin-top:15px;padding:16px;font-size:12px">frame.len = 151<br>tcp.len = 97<br>mqtt.msgtype = 1<br>mqtt.kalive = 15<br>mqtt.len = 95</div><p style="margin-top:17px">ดูแปลกเมื่อเทียบ Normal profile แต่แปลกไม่พอที่จะเป็น attack.</p></div>
+      <div>
+        <h3>หลักฐานหักล้าง</h3>
+        <ol class="number-list">
+          <li><span>Id=4550 เป็น CONACK handshake twin และเคยทำ Private ตก</span></li>
+          <li><span>v30 เติม 13 CONNECT rows แล้ว Public/Private ตก</span></li>
+          <li><span>v31 เติมเพิ่มเป็น 23 rows แล้วตกหนักกว่าเดิม</span></li>
+          <li><span>สรุป: CONNECT family นี้เป็น hard-negative zone</span></li>
+        </ol>
+      </div>
+    </div>
+    <div class="quote orange">อย่าเติมแถวเพราะ anomaly score สูง. ต้องถามว่า attack context อยู่ที่ไหน.</div>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>นี่คือ negative result สำคัญ. แสดงว่าระบบเรียนรู้ normal TCP/MQTT handshake ได้ยากถ้ามองเฉพาะ novelty.</p></aside>
+  </section>
+
+  <section class="slide" data-number="13" data-title="Validation">
+    <div class="kicker">12 / QUALITY GATES</div>
+    <h2>ก่อนใช้ไฟล์ ต้องผ่าน gate ทุกชั้น</h2>
+    <div class="grid grid-3">
+      <div class="card"><span class="pill">SCHEMA</span><h3 style="margin-top:17px">Output integrity</h3><ul><li>10,000 rows</li><li>columns = Id,label</li><li>Id order ตรง X_test</li><li>label binary / non-null</li></ul></div>
+      <div class="card"><span class="pill orange">MODEL</span><h3 style="margin-top:17px">Reproducibility</h3><ul><li>deterministic predictor</li><li>baseline 2,809 labels</li><li>v27 delta แยกไฟล์</li><li>SHA-256 ทุก artifact</li></ul></div>
+      <div class="card"><span class="pill dark">EVIDENCE</span><h3 style="margin-top:17px">Falsification</h3><ul><li>hard-negative scan</li><li>stream context</li><li>source/PCAP audit</li><li>score delta จริง</li></ul></div>
+    </div>
+    <div class="card dark" style="margin-top:24px"><h3>Validation command</h3><div class="code" style="box-shadow:none;background:#0c222d;margin-top:14px">.venv/bin/python work/test_post_v27_stream_threshold_suite.py<br><span class="comment"># validated_candidates=2</span></div></div>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>สไลด์นี้ตอบคำถามว่าไฟล์เชื่อถือได้อย่างไร. ไม่ใช่แค่ score สูง แต่ต้องสร้างซ้ำและตรวจ schema ได้.</p></aside>
+  </section>
+
+  <section class="slide" data-number="14" data-title="Reproduce">
+    <div class="kicker">13 / HANDOFF</div>
+    <h2>ส่งต่อและทดสอบต่อได้ทันที</h2>
+    <div class="grid grid-2">
+      <div class="card dark"><h3>ไฟล์สำหรับส่ง</h3><p style="font-family:var(--mono);font-size:14px;color:var(--lime);word-break:break-all">outputs/post_v25_publish_candidates/submission_v27_stream3_5_payload.csv</p><div class="metric"><span>rows</span><strong>10,000</strong></div><div class="metric"><span>labels = 1</span><strong>2,854</strong></div><div class="metric"><span>SHA-256</span><strong style="font-size:14px;color:#55ead6">6cca99ca...</strong></div></div>
+      <div class="card"><h3>สร้าง baseline ใหม่</h3><div class="code" style="font-size:12px">.venv/bin/python outputs/predict_final_model.py \
+  --train data/X_train.csv \
+  --test data/X_test.csv \
+  --output outputs/submission_reproduced.csv</div><p class="small" style="margin-top:17px">baseline model สร้าง 2,809 labels. v27 คือ artifact ที่ต่อยอดด้วย confirmed stream/payload delta.</p></div>
+    </div>
+    <div class="callout"><div class="icon">→</div><p><b>เลือก v27 เป็นไฟล์หลัก.</b> v30/v31 เก็บเป็น evidence ของการ reject ไม่ใช่ไฟล์แนะนำ.</p></div>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>ใช้สไลด์นี้ตอนส่งมอบ. เปิด path ของ CSV และแสดง command สำหรับสร้าง baseline เพื่อให้ทีมอื่นตรวจซ้ำได้.</p></aside>
+  </section>
+
+  <section class="slide" data-number="15" data-title="Next work">
+    <div class="kicker">14 / NEXT LEVEL</div>
+    <h2>ถ้าจะชนะด้วยเครื่องแรงขึ้น ต้องเปลี่ยนหน่วยวิเคราะห์</h2>
+    <div class="grid grid-4">
+      <div class="card"><h3>Flow</h3><p>direction, inter-arrival, burst, byte/packet rate</p></div>
+      <div class="card"><h3>State</h3><p>SYN/ACK transitions, reset ratio, session lifecycle</p></div>
+      <div class="card"><h3>MQTT sequence</h3><p>CONNECT → CONNACK → PUBLISH/SUBSCRIBE transition</p></div>
+      <div class="card"><h3>Grouped validation</h3><p>split by capture/session, not random packet</p></div>
+    </div>
+    <div class="quote">โมเดลใหญ่ขึ้นไม่ช่วย ถ้ายังวิเคราะห์ packet แบบโดดๆ. Context ใหญ่ขึ้นช่วย.</div>
+    <div class="grid grid-2"><div class="card dark"><h3>Experiment gate</h3><p>candidate ต้องมี support, ไม่ชน normal corpus, ผ่าน hard negatives และคาด precision สูงกว่า F1 break-even.</p></div><div class="card"><h3>Artifact discipline</h3><p>immutable baseline, changed Ids, observed score, checksum, rollback path.</p></div></div>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>ปิดส่วนเทคนิคด้วยแผนต่อยอดที่ทำได้จริง: flow features, MQTT transaction, grouped validation และ evidence gate.</p></aside>
+  </section>
+
+  <section class="slide" data-number="16" data-title="สรุป">
+    <div class="qa">
+      <div>
+        <div class="kicker">15 / TAKEAWAY</div>
+        <h1>Protocol meaning.<br><span class="accent">Context.</span><br>Falsification.</h1>
+        <p class="lead" style="margin:0 auto">สามสิ่งที่ทำให้ detector จาก Normal-only ใช้งานได้จริง</p>
+        <div class="score-grid" style="justify-content:center;margin-top:30px"><div class="score-box"><small>RECOMMENDED FILE</small><strong style="font-size:18px;letter-spacing:-.04em">v27</strong></div><div class="score-box private"><small>PRIVATE F1</small><strong>0.97748</strong></div></div>
+        <p class="muted" style="margin-top:26px">ขอบคุณครับ · Q&amp;A</p>
+      </div>
+    </div>
+    <aside class="notes"><h3>หมายเหตุผู้บรรยาย</h3><p>สรุปสั้น: ใช้ protocol semantics เป็น anchor, ใช้ context ไม่เติมกว้าง, ยอมแพ้เมื่อหลักฐานหักล้าง. เปิดถามตอบ.</p></aside>
+  </section>
+</main>
+
+<nav class="nav" aria-label="Slide controls">
+  <button id="prev" aria-label="Previous slide">‹</button>
+  <button id="next" aria-label="Next slide">›</button>
+  <div class="progress" aria-hidden="true"><i id="progress"></i></div>
+  <div class="counter" id="counter">01 / 16</div>
+  <button id="notesBtn" aria-label="Toggle presenter notes">N</button>
+  <button id="fullBtn" aria-label="Toggle fullscreen">⛶</button>
+  <span class="hint">← → เลื่อน · N notes · F fullscreen · P print</span>
+</nav>
+<aside class="notes" id="notesPanel"><button class="close" id="closeNotes" aria-label="Close notes">×</button><h3 id="notesTitle">หมายเหตุผู้บรรยาย</h3><div id="notesText"></div></aside>
+
+<script>
+(() => {
+  const slides = [...document.querySelectorAll('.slide')];
+  const notesPanel = document.getElementById('notesPanel');
+  const notesText = document.getElementById('notesText');
+  const notesTitle = document.getElementById('notesTitle');
+  const counter = document.getElementById('counter');
+  const progress = document.getElementById('progress');
+  let index = 0;
+  const clean = n => Math.max(0, Math.min(slides.length - 1, n));
+  function render(n, push = true) {
+    index = clean(n);
+    slides.forEach((s, i) => s.classList.toggle('active', i === index));
+    counter.textContent = `${String(index + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+    progress.style.width = `${((index + 1) / slides.length) * 100}%`;
+    const note = slides[index].querySelector('.notes');
+    notesTitle.textContent = `${slides[index].dataset.number} · ${slides[index].dataset.title}`;
+    notesText.innerHTML = note ? note.innerHTML.replace(/<h3[^>]*>.*?<\/h3>/, '') : '<p>ไม่มี speaker note สำหรับสไลด์นี้</p>';
+    if (push) history.replaceState(null, '', `#slide-${index + 1}`);
+  }
+  function move(delta) { render(index + delta); }
+  document.getElementById('prev').addEventListener('click', () => move(-1));
+  document.getElementById('next').addEventListener('click', () => move(1));
+  document.getElementById('notesBtn').addEventListener('click', () => notesPanel.classList.toggle('show'));
+  document.getElementById('closeNotes').addEventListener('click', () => notesPanel.classList.remove('show'));
+  document.getElementById('fullBtn').addEventListener('click', () => document.documentElement.requestFullscreen?.());
+  document.addEventListener('keydown', e => {
+    if (['INPUT', 'TEXTAREA'].includes(e.target.tagName)) return;
+    if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); move(1); }
+    if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); move(-1); }
+    if (e.key.toLowerCase() === 'n') notesPanel.classList.toggle('show');
+    if (e.key.toLowerCase() === 'f') document.documentElement.requestFullscreen?.();
+    if (e.key.toLowerCase() === 'p') window.print();
+    if (e.key === 'Home') render(0);
+    if (e.key === 'End') render(slides.length - 1);
+  });
+  let startX = null;
+  document.addEventListener('touchstart', e => { startX = e.changedTouches[0].clientX; }, {passive: true});
+  document.addEventListener('touchend', e => { if (startX === null) return; const dx = e.changedTouches[0].clientX - startX; if (Math.abs(dx) > 55) move(dx < 0 ? 1 : -1); startX = null; }, {passive: true});
+  const fromHash = Number(location.hash.match(/slide-(\d+)/)?.[1] || 1) - 1;
+  render(Number.isFinite(fromHash) ? fromHash : 0, false);
+})();
+</script>
+</body>
+</html>

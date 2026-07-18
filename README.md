@@ -1,6 +1,6 @@
 # SuperAI6 IoT Attack Detection
 
-Reproducible solution for the Super AI Engineer Season 6 IoT attack detection competition. The strongest recorded submission currently has public F1 **0.96267**.
+Reproducible solution for the Super AI Engineer Season 6 IoT attack detection competition. The current best controlled submission has public F1 **0.96824** and private F1 **0.97748**.
 
 ## Final Artifacts
 
@@ -9,6 +9,9 @@ Reproducible solution for the Super AI Engineer Season 6 IoT attack detection co
 - `docs/SuperAI6_IoT_Attack_Detection_Report_TH.pdf`: detailed Thai technical report.
 - `presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.pptx`: 17-slide Thai presentation with speaker notes.
 - `presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.pdf`: presentation-ready PDF export.
+- `presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.html`: self-contained Thai HTML deck with notes, keyboard controls, fullscreen, touch, and print mode.
+- `outputs/post_v25_publish_candidates/submission_v27_stream3_5_payload.csv`: current best controlled submission artifact.
+- `outputs/post_v32_structural_audit_report.md`: latest v30/v31 rejection audit.
 - `outputs/predict_final_model.py`: standalone deterministic inference script.
 - `outputs/submission_current_best_96267.csv`: exact strongest scored submission.
 - `outputs/submission_next_01_twin_payload132.csv`: highest-confidence next submission candidate.

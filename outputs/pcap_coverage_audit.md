@@ -1,0 +1,35 @@
+# PCAP Coverage Audit
+
+## Input
+
+- Submission: `submission_rank1_structural_plus1.csv`
+- Submission SHA256: `fa357be08880f7dbdf32e61052ad01eeae251c8706d2bc077818efaa7d9a73d7`
+- Positive labels: `2810`
+- Match key: frame length, TCP stream, RTT rounded to 6 decimals, TCP length, window, SYN, RST, ACK.
+
+## Result
+
+- Exact PCAP/test union: `422` rows.
+- Already labeled attack: `422` rows.
+- Candidate additions: `0` rows.
+- Decision: No source-supported additions were found.
+
+## Per Source
+
+| source_pcap | pcap_bytes | tcp_rows | exact_test_matches | matched_current_attack | matched_current_normal |
+| --- | --- | --- | --- | --- | --- |
+| BF1_DDoS_AD_1.pcap | 50000080 | 515532 | 391 | 391 | 0 |
+| BF1_DDoS_AD_2.pcap | 50000076 | 515873 | 383 | 383 | 0 |
+| BF1_DoS_AD_1.pcap | 200000192 | 2066805 | 422 | 422 | 0 |
+| Delay_DDoS_AD_1.pcap | 50000008 | 510337 | 385 | 385 | 0 |
+| Delay_DDoS_AD_2.pcap | 50000000 | 511383 | 404 | 404 | 0 |
+| Delay_DoS_AD_1.pcap | 200000460 | 661416 | 401 | 401 | 0 |
+| SYN-DDoS-AD_1.pcap | 50000056 | 497483 | 383 | 383 | 0 |
+| Sub_DDoS_AD_1.pcap | 50000080 | 305376 | 393 | 393 | 0 |
+| Sub_DDoS_AD_2.pcap | 50001164 | 247228 | 223 | 223 | 0 |
+| WILL_DDoS_AD_1.pcap | 50000088 | 257289 | 405 | 405 | 0 |
+| WILL_DDoS_AD_2.pcap | 50001248 | 253534 | 409 | 409 | 0 |
+| WILL_DoS_AD_1.pcap | 200000124 | 711866 | 396 | 396 | 0 |
+| UNION | 1050003576 | 7054122 | 422 | 422 | 0 |
+
+This audit does not estimate Kaggle score and does not upload a submission.

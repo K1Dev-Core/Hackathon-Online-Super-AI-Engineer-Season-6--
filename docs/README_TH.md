@@ -10,32 +10,30 @@
 | `SuperAI6_IoT_Attack_Detection_Report_TH.md` | แก้เนื้อหาต้นฉบับ | canonical technical content |
 | `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.pptx` | พรีเซนต์ | 17 slides, 16:9, speaker notes ฝังในไฟล์ |
 | `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.pdf` | เปิดสำรอง | PDF ที่ตรวจ Thai glyph และ layout แล้ว |
-| `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.html` | พรีเซนต์ผ่าน browser | ไฟล์เดียวจบ มี notes, keyboard, fullscreen, touch และ print/PDF |
+| `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.html` | พรีเซนต์ผ่าน browser | ไฟล์เดียวจบ 12 slides มี notes, keyboard, fullscreen, touch และ print/PDF |
 | `SuperAI6_Presentation_Speaker_Notes_TH.md` | ซ้อมพูด | script แยกตาม slide |
 
 ## ลำดับนำเสนอ 10 นาที
 
-ใช้ HTML deck ครบ 16 slides เวลาประมาณ 30–40 วินาทีต่อหน้า:
+ใช้ HTML deck ครบ 12 slides เวลาประมาณ 30–40 วินาทีต่อหน้า:
 
 1. ปัญหา Normal-only และเป้าหมาย F1
-2. Attack landscape และ feature layers
-3. Core insight กับ pipeline
-4. Rule engine และ precision corrections
-5. Structural completion และ score progression
-6. PCAP evidence กับ falsification cases
-7. Public–Private gap และผลสุดท้าย
-8. Negative results, next work และ Q&A
+2. Feature layers และสมมติฐาน
+3. Pipeline และ rule engine
+4. โค้ดจริงและ hard negatives
+5. Case studies และ score evidence
+6. Reproducibility, limitations, references และ Q&A
 
 ## ลำดับนำเสนอ 5 นาที
 
-เลือก slides `1, 2, 5, 6, 7, 9, 10, 11, 13, 14, 17` รวม 11 หน้า เน้นประโยคหลัก:
+เลือก slides `1, 2, 4, 5, 7, 8, 9, 10, 11, 12` รวม 10 หน้า เน้นประโยคหลัก:
 
 - Train มี Normal เท่านั้น จึงต้องใช้ one-class anomaly detection
 - Protocol rules เป็น high-precision anchors
 - Stream structure เพิ่ม `Id=9816` และทำคะแนนดีขึ้น
 - PCAP support ต้องมี normal falsifier และ context
 - Public-best ไม่ใช่ Private-best เสมอ
-- ผลล่าสุดที่ยืนยัน: Public `0.96824`, Private `0.97748`
+- ไฟล์ที่เลือกสำหรับ upload: `submission_offline_02_hedge_payload132.csv`, Public `0.96267`, Private `0.97198`
 
 ## Demo สำหรับ Q&A
 
@@ -51,7 +49,7 @@ python outputs/predict_final_model.py \
 - `outputs/predict_final_model.py` สำหรับ protocol rules
 - `outputs/offline_benchmark_report.md` สำหรับ Monte Carlo/stress test
 - `outputs/pcap_attack_shape_support.csv` และ `outputs/pcap_normal_shape_support.csv` สำหรับ evidence gate
-- `outputs/submission_current_best_96267.csv` สำหรับ exact scored artifact
+- `outputs/offline_benchmark_candidates/submission_offline_02_hedge_payload132.csv` สำหรับไฟล์ที่เลือก upload
 
 ## หมายเหตุการแก้ไข
 

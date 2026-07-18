@@ -12,6 +12,7 @@
 | `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.pdf` | เปิดสำรอง | PDF ที่ตรวจ Thai glyph และ layout แล้ว |
 | `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.html` | พรีเซนต์ผ่าน browser | ไฟล์เดียวจบ 12 slides มี notes, keyboard, fullscreen, touch และ print/PDF |
 | `SuperAI6_Presentation_Speaker_Notes_TH.md` | ซ้อมพูด | script แยกตาม slide |
+| `SuperAI6_Slide_Handoff_TH.md` | ส่งให้ AI ทำสไลด์ต่อ | brief ครบ 12 slides, code จริง, score, references และ checklist |
 
 ## ลำดับนำเสนอ 10 นาที
 
@@ -33,7 +34,7 @@
 - Stream structure เพิ่ม `Id=9816` และทำคะแนนดีขึ้น
 - PCAP support ต้องมี normal falsifier และ context
 - Public-best ไม่ใช่ Private-best เสมอ
-- ไฟล์ที่เลือกสำหรับ upload: `submission_offline_02_hedge_payload132.csv`, Public `0.96267`, Private `0.97198`
+- ไฟล์ที่เลือก upload: `submission_offline_02_hedge_payload132.csv`, Public `0.96267`, Private `0.97198`
 
 ## Demo สำหรับ Q&A
 

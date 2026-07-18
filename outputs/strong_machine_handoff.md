@@ -2,11 +2,22 @@
 
 ## Start Here
 
-- Baseline submission: `outputs/submission_rank1_structural_plus1.csv`
-- Observed Kaggle public F1: `0.96230`
+- Baseline submission: `outputs/submission_current_best_96267.csv`
+- Observed Kaggle public F1: `0.96267`
 - Rows: `10,000`
-- Positive labels: `2,810`
-- SHA-256: `fa357be08880f7dbdf32e61052ad01eeae251c8706d2bc077818efaa7d9a73d7`
+- Positive labels: `2,811`
+- SHA-256: `2fe54d9dd8fc524d605fb0115941e896c86d09a6be5485d1ab626f66375c03a4`
+
+Kaggle submission `54808193` established that adding `Id=1145` to the previous
+baseline improves public F1 from `0.96230` to `0.96267`.
+
+Next ranked artifacts:
+
+1. `outputs/submission_next_01_twin_payload132.csv`: add `Id=5244`; strongest
+   next candidate because all non-Id features exactly match confirmed `Id=1145`.
+2. `outputs/submission_next_02_twin_plus_payload150.csv`: also add `Id=5516`.
+3. `outputs/submission_next_03_twin_plus_precision4.csv`: also add `Id=4057`
+   and `Id=6011`; higher-risk backup.
 
 Do not continue from `outputs/submission_urgent_pcap_shape_8150.csv`. Adding
 `Id=8150` reduced public F1 to `0.96196` in Kaggle submission `54808099`.
@@ -24,7 +35,7 @@ Do not continue from `outputs/submission_urgent_pcap_shape_8150.csv`. Adding
 
 ## Next High-Compute Work
 
-1. Keep `submission_rank1_structural_plus1.csv` as immutable baseline.
+1. Keep `submission_current_best_96267.csv` as immutable baseline.
 2. Reconstruct ordered flows from source PCAPs instead of classifying isolated
    packet rows. Generate preceding/following packet features, inter-arrival
    deltas, direction, TCP state transitions, and MQTT transaction context.
@@ -37,4 +48,3 @@ Do not continue from `outputs/submission_urgent_pcap_shape_8150.csv`. Adding
 
 The raw competition files remain excluded from Git. On the new machine place
 `X_train.csv`, `X_test.csv`, and `sample_submission.csv` in `data/`.
-

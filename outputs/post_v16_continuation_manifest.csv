@@ -1,0 +1,5 @@
+rank,filename,positive_labels,added_ids_vs_v16,role,confidence,note,sha256
+1,submission_v17_plus_stream2_tail.csv,2825,1223;9757;5850;5177,PRIMARY_NEXT,STREAM2_CLUSTER,Residual ranks 12-15; same stream-2 family as confirmed positives.,0fd4735aca3ea98f7418d5193e4db642fadab3f7834c60e0a04abc8617931228
+2,submission_v18_plus_rank12_16.csv,2826,1223;9757;5850;5177;8362,AGGRESSIVE_FIVE,MEDIUM_CLUSTER_PLUS,Ranks 12-16; adds stream-4 candidate 8362.,71880994fadc66c25a7ca0883c13e3422b0234ed4378e849b29551f7fe2b4179
+3,submission_v19_plus_rank12_20.csv,2830,1223;9757;5850;5177;8362;592;4082;8832;4394,AGGRESSIVE_NINE,HIGH_RISK,All residual ranks 12-20.,3a90a0024643a7d40283c12b66d027d7837ba62f154148e3e1aeee04e7edc127
+4,submission_v20_plus_rank12_30.csv,2840,1223;9757;5850;5177;8362;592;4082;8832;4394;6644;7235;524;1309;4188;1636;1763;2440;2743;2798,MAXIMUM_UPSIDE,MAX_RISK,All residual ranks 12-30; maximum false-positive exposure.,95a03f7673a0ad512fc5030d5a4294e9e1acf8c62572417acde73a71fffb1db9

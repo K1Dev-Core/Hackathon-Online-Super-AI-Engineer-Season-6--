@@ -1,0 +1,4 @@
+kaggle_ref,filename,public_f1,private_f1
+54809890,submission_v16_plus_residual_top7.csv,0.96414,0.97403
+54809908,submission_v14_plus_dual_ack.csv,0.96304,0.97335
+54809842,submission_v12_plus_rare_ack.csv,0.96304,0.973

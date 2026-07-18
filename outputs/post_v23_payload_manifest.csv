@@ -1,0 +1,4 @@
+rank,filename,positive_labels,added_ids_vs_v23,role,confidence,note,sha256
+1,submission_v24_stream2_mqtt_payload.csv,2841,778;2704;5804;6155;6546;6572;6803;7784;7935,PRIMARY_PROTOCOL_CONTEXT,STREAM2_PAYLOAD_CLUSTER,Nine unselected MQTT payload rows in stream 2; stream positive fraction 0.9384.,264003b2321009622e3a052f53958099cd66a78f04dcee116ad8edaf0980cf4f
+2,submission_v25_stream2_plus_stream4_payload.csv,2844,778;2704;5804;6155;6546;6572;6803;7784;7935;4475;7661;8393,AGGRESSIVE_PROTOCOL_CONTEXT,TWO_STREAM_PAYLOAD,Adds three unselected MQTT payload rows from stream 4; fraction 0.9138.,e01a93fc5e28f093bd91a39dd6a9f384151d618c632b58396cbd987fb2626655
+3,submission_v26_stream_payload_plus_connect.csv,2845,778;2704;5804;6155;6546;6572;6803;7784;7935;4475;7661;8393;4550,MAXIMUM_PAYLOAD_RISK,CONNECT_FALSE_POSITIVE_RISK,Adds Id=4550 MQTT CONNECT row; highest risk because CONNECT may be normal.,1ff594703457be2f43ceb48b4dc2b930c7aba5c12c4d82c24a94125d7a69c96d

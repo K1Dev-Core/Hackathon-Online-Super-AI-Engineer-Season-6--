@@ -30,3 +30,13 @@ work/vendor/
 work/external/
 work/*.csv
 work/*.json
+
+# Document and presentation render scratch directories
+docs/design_html_*/
+docs/design_render_*/
+docs/rendered_*/
+docs/technical_render_*/
+docs/pdf_tmp/
+presentation/pdf_*/
+presentation/rendered_*/
+presentation/pdf_tmp/

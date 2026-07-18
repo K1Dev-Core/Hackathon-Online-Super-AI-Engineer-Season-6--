@@ -4,6 +4,11 @@ Reproducible solution for the Super AI Engineer Season 6 IoT attack detection co
 
 ## Final Artifacts
 
+- `docs/SuperAI6_IoT_Attack_Detection_Design_Report_TH.docx`: Thai Design Report built from retained Design Report template.
+- `docs/SuperAI6_IoT_Attack_Detection_Design_Report_TH.pdf`: rendered Design Report with Thai glyph support.
+- `docs/SuperAI6_IoT_Attack_Detection_Report_TH.pdf`: detailed Thai technical report.
+- `presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.pptx`: 17-slide Thai presentation with speaker notes.
+- `presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.pdf`: presentation-ready PDF export.
 - `outputs/predict_final_model.py`: standalone deterministic inference script.
 - `outputs/submission_current_best_96267.csv`: exact strongest scored submission.
 - `outputs/submission_next_01_twin_payload132.csv`: highest-confidence next submission candidate.

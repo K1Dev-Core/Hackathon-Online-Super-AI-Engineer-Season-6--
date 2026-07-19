@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IoT Attack Detection | Technical Deep Dive</title>
+<style>
+:root {
+  --ink: #203039;
+  --slate: #20343b;
+  --paper: #f6f2e9;
+  --card: #fffdf8;
+  --muted: #66777b;
+  --line: #d5ddd8;
+  --teal: #327e79;
+  --teal-soft: #e2efeb;
+  --terracotta: #c96b4d;
+  --terracotta-soft: #f5e5de;
+  --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --sans: Tahoma, "Arial Unicode MS", "Noto Sans Thai", sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; color: var(--ink); background: var(--paper); font: 16px/1.65 var(--sans); }
+a { color: var(--teal); }
+code, pre { font-family: var(--mono); }
+code { padding: .1em .3em; color: #246b68; background: #eaf2ee; border-radius: 4px; }
+.cover { min-height: 72vh; display: flex; flex-direction: column; justify-content: center; padding: 80px max(7vw, 28px); color: #eef5f0; background: var(--slate); }
+.eyebrow { margin-bottom: 18px; color: #9bd1c5; font: 800 12px var(--mono); letter-spacing: .12em; }
+.cover h1 { max-width: 960px; margin: 0 0 22px; color: #fffdf8; font-size: clamp(38px, 6vw, 82px); line-height: 1.02; letter-spacing: -.055em; }
+.cover .lead { max-width: 850px; color: #d5e3de; font-size: clamp(18px, 2vw, 28px); }
+.cover-meta { display: flex; flex-wrap: wrap; gap: 12px 26px; margin-top: 34px; color: #b9cec8; font-size: 14px; }
+.cover-rule { width: 66px; height: 5px; margin: 30px 0; background: var(--terracotta); }
+.layout { display: grid; grid-template-columns: 250px minmax(0, 900px); gap: 46px; max-width: 1280px; margin: 0 auto; padding: 58px 28px 100px; }
+.toc { position: sticky; top: 28px; align-self: start; padding: 20px; background: var(--card); border: 1px solid var(--line); border-radius: 10px; }
+.toc h2 { margin: 0 0 12px; color: var(--slate); font-size: 16px; }
+.toc ol { margin: 0; padding: 0 0 0 20px; }
+.toc li { margin: 6px 0; color: var(--muted); font-size: 13px; line-height: 1.35; }
+.toc a { text-decoration: none; }
+main { min-width: 0; }
+section { margin-bottom: 62px; scroll-margin-top: 25px; }
+h1 { margin: 0 0 20px; padding-top: 13px; border-top: 5px solid var(--teal); color: var(--slate); font-size: clamp(27px, 3.4vw, 46px); line-height: 1.1; letter-spacing: -.04em; }
+h2 { margin: 30px 0 12px; color: var(--teal); font-size: 23px; line-height: 1.2; }
+h3 { margin: 24px 0 8px; color: var(--slate); font-size: 18px; }
+p { margin: 0 0 14px; }
+ul, ol { margin-top: 8px; padding-left: 24px; }
+li { margin: 5px 0; }
+.callout { margin: 20px 0; padding: 18px 21px; border-left: 5px solid var(--teal); color: #244e4c; background: var(--teal-soft); }
+.warning { border-left-color: var(--terracotta); color: #7c402f; background: var(--terracotta-soft); }
+.card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 18px 0; }
+.card { padding: 20px; background: var(--card); border: 1px solid var(--line); border-radius: 9px; }
+.card h3 { margin-top: 0; }
+.dark-card { color: #eef5f0; background: var(--slate); border-color: var(--slate); }
+.dark-card h3 { color: #a9d5cb; }
+.table-wrap { overflow-x: auto; margin: 18px 0 25px; }
+table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 14px; }
+th { color: #fffdf8; background: var(--slate); font: 800 12px var(--mono); text-align: left; letter-spacing: .04em; }
+th, td { padding: 11px 13px; border: 1px solid var(--line); vertical-align: top; }
+tbody tr:nth-child(even) td { background: #edf2ee; }
+pre { overflow-x: auto; margin: 17px 0 24px; padding: 18px 20px; color: #eef5f0; background: #182a31; border-radius: 8px; font-size: 13px; line-height: 1.55; }
+.diagram { overflow-x: auto; padding: 20px; color: #dcece7; background: var(--slate); border-radius: 8px; font: 13px/1.55 var(--mono); white-space: pre; }
+.tag { display: inline-block; padding: 4px 8px; color: #286b67; background: var(--teal-soft); border: 1px solid #c2d9d2; border-radius: 999px; font: 800 11px var(--mono); }
+.tag.warn { color: #934a37; background: var(--terracotta-soft); border-color: #e1b9aa; }
+.footer { max-width: 1280px; margin: 0 auto; padding: 0 28px 50px; color: var(--muted); font-size: 13px; }
+@media (max-width: 850px) {
+  .layout { display: block; padding-top: 28px; }
+  .toc { position: static; margin-bottom: 35px; }
+  .card-grid { grid-template-columns: 1fr; }
+  .cover { min-height: 62vh; padding: 55px 24px; }
+}
+@media print {
+  body { background: #fff; }
+  .cover { min-height: 250mm; page-break-after: always; }
+  .layout { display: block; max-width: none; padding: 0; }
+  .toc { display: none; }
+  section { page-break-inside: auto; }
+  h1 { page-break-before: always; }
+  h1:first-child { page-break-before: auto; }
+  .footer { padding: 20px 0; }
+}
+</style>
+</head>
+<body>
+<header class="cover">
+  <div class="eyebrow">SUPER AI ENGINEER SEASON 6 / KNOWLEDGE SHARING</div>
+  <h1>IoT Attack Detection<br><span style="color:#9bd1c5">Technical Deep Dive</span></h1>
+  <p class="lead">Data schema, protocol features, normal-profile rules, ML audit models, tuning, validation และข้อจำกัด</p>
+  <div class="cover-rule"></div>
+  <div class="cover-meta"><span>Protocol: TCP + MQTT</span><span>Learning setup: Normal-only</span><span>Audience: technical presentation</span></div>
+</header>
+<div class="layout">
+  <aside class="toc">
+    <h2>สารบัญ</h2>
+    <ol>
+      <li><a href="#summary">ภาพรวม</a></li>
+      <li><a href="#data">Dataset schema</a></li>
+      <li><a href="#pipeline">Data pipeline</a></li>
+      <li><a href="#rules">Core rule engine</a></li>
+      <li><a href="#context">Context และ hard negatives</a></li>
+      <li><a href="#features">Feature engineering</a></li>
+      <li><a href="#ml">Experimental ML models</a></li>
+      <li><a href="#validation">Training และ validation</a></li>
+      <li><a href="#errors">Error analysis</a></li>
+      <li><a href="#limits">Limitations</a></li>
+      <li><a href="#references">References</a></li>
+    </ol>
+  </aside>
+  <main>
+    <section id="summary">
+      <h1>1. ภาพรวม</h1>
+      <p>โจทย์เป็น anomaly detection แบบ Normal-only: train มีข้อมูล Normal เป็นหลัก แต่ไม่มี attack labels ที่สมบูรณ์ให้ฝึก supervised classifier โดยตรง. ระบบที่สร้างจึงใช้ protocol semantics และ normal profile แทนการพึ่ง anomaly score เดี่ยว.</p>
+      <div class="callout"><strong>แกนหลักของระบบ:</strong> Normal profile + TCP/MQTT rules + stream context + hard-negative exclusions = interpretable attack detector</div>
+      <div class="card-grid">
+        <div class="card"><span class="tag">DATA</span><h3>Input</h3><p><code>X_train.csv</code> 100,000 rows, Normal reference. <code>X_test.csv</code> 10,000 rows สำหรับ inference.</p></div>
+        <div class="card dark-card"><span class="tag">MODEL</span><h3>Core model</h3><p>Deterministic rule engine. ไม่มี neural weights หรือ serialized checkpoint.</p></div>
+        <div class="card"><span class="tag">AUDIT</span><h3>ML experiments</h3><p>ExtraTrees, RandomForest, HistGradientBoosting และ IsolationForest ใช้จัดอันดับ/ตรวจ residual candidates.</p></div>
+        <div class="card"><span class="tag warn">RISK</span><h3>Primary risk</h3><p>Rare-normal, pseudo-label bias, stream leakage และ external domain shift.</p></div>
+      </div>
+      <p>คำว่า training ใน core system หมายถึงการสร้าง support sets จาก Normal train และการเลือก rule signatures จาก protocol knowledge. ไม่ใช่ gradient descent.</p>
+    </section>
+
+    <section id="data">
+      <h1>2. Dataset และ feature schema</h1>
+      <h2>2.1 Files</h2>
+      <div class="table-wrap"><table><thead><tr><th>File</th><th>Rows</th><th>Role</th></tr></thead><tbody>
+        <tr><td><code>X_train.csv</code></td><td>100,000</td><td>Normal reference</td></tr>
+        <tr><td><code>X_test.csv</code></td><td>10,000</td><td>unlabeled inference set</td></tr>
+      </tbody></table></div>
+      <h2>2.2 Columns</h2>
+      <p><code>Id</code> เป็น row identity ไม่ใช่ predictive feature. มี 22 predictive fields แบ่งเป็น Frame, TCP และ MQTT.</p>
+      <div class="table-wrap"><table><thead><tr><th>Group</th><th>Fields</th><th>Meaning</th></tr></thead><tbody>
+        <tr><td>Frame</td><td><code>frame.len</code>, <code>frame.protocols</code></td><td>packet size และ protocol stack</td></tr>
+        <tr><td>TCP transport</td><td><code>tcp.stream</code>, <code>tcp.analysis.initial_rtt</code>, <code>tcp.len</code>, <code>tcp.window_size</code></td><td>flow identity, timing, payload และ window</td></tr>
+        <tr><td>TCP flags</td><td><code>tcp.flags.syn</code>, <code>tcp.flags.reset</code>, <code>tcp.flags.ack</code></td><td>connection state</td></tr>
+        <tr><td>MQTT message</td><td><code>mqtt.msgtype</code>, <code>mqtt.qos</code>, <code>mqtt.len</code>, <code>mqtt.topic_len</code></td><td>message type และ payload shape</td></tr>
+        <tr><td>MQTT session</td><td><code>mqtt.conflag.qos</code>, <code>mqtt.conflag.cleansess</code>, <code>mqtt.kalive</code></td><td>session configuration</td></tr>
+        <tr><td>MQTT flags</td><td><code>mqtt.retain</code>, <code>mqtt.conflag.retain</code>, <code>mqtt.conflag.willflag</code></td><td>publish/will semantics</td></tr>
+        <tr><td>MQTT credentials</td><td><code>mqtt.username_len</code>, <code>mqtt.passwd_len</code>, <code>mqtt.conack.val</code></td><td>credential and connection response</td></tr>
+      </tbody></table></div>
+      <div class="callout warning"><strong>Missing MQTT ≠ broken row.</strong> TCP control packets อาจไม่มี MQTT layer. Core rules จึงไม่เติมค่า missing แบบ arbitrary.</div>
+      <p><code>tcp.stream</code> เป็น context ภายใน capture. Packet ใน stream เดียวกัน correlated สูง จึงต้องระวัง random row split และ leakage.</p>
+    </section>
+
+    <section id="pipeline">
+      <h1>3. Data pipeline</h1>
+      <div class="diagram">CSV input
+   |
+   v
+Schema check + dtype inspection
+   |
+   +--> Normal profile / known shapes
+   |
+   +--> Protocol rules
+   |
+   +--> Frequency features + optional ML audit
+   |
+   v
+Context gate + hard-negative exclusion
+   |
+   v
+Binary attack decision + validation report</div>
+      <h2>3.1 Load and preserve</h2>
+      <pre><code>train = pd.read_csv(TRAIN, low_memory=False)
+test = pd.read_csv(TEST, low_memory=False)</code></pre>
+      <ul>
+        <li>รักษา row order และ Id identity</li>
+        <li>ไม่เปลี่ยน missing MQTT เป็นค่าทาง protocol จริง</li>
+        <li>เก็บ raw columns ก่อนสร้าง derived features</li>
+      </ul>
+      <h2>3.2 Build Normal profile</h2>
+      <pre><code>normal_windows = set(train["tcp.window_size"].dropna().unique())
+normal_frame_windows = pd.MultiIndex.from_frame(
+    train[["frame.len", "tcp.window_size"]]
+)</code></pre>
+      <p>profile นี้เป็น support set: ค่าหรือ pair เคยเกิดใน Normal train หรือไม่. ไม่ใช่ probability distribution เต็มรูปแบบ.</p>
+    </section>
+
+    <section id="rules">
+      <h1>4. Core model: deterministic rule engine</h1>
+      <p>Source หลักคือ <a href="../outputs/predict_final_model.py"><code>outputs/predict_final_model.py</code></a>. ระบบอ่าน train เพื่อสร้าง normal profile แล้ว apply Boolean rules กับ test.</p>
+      <h2>4.1 Unseen TCP window</h2>
+      <pre><code>attack_stack = ~test["tcp.window_size"].isin(normal_windows)</code></pre>
+      <p>ช่วยจับ attack capture ที่ใช้ TCP stack หรือ window value นอก Normal support. ต้องใช้ร่วมกับ rules อื่น เพราะ device ใหม่อาจมี window ใหม่แบบ benign.</p>
+      <h2>4.2 Unseen frame/window pair</h2>
+      <pre><code>attack_packet_shape = (
+    ~test_frame_windows.isin(normal_frame_windows)
+    &amp; test["mqtt.msgtype"].ne(3)
+)</code></pre>
+      <p>ใช้ interaction ของ frame length กับ window แทน field เดี่ยว และตัด PUBLISH ออกจาก generic novelty เพราะ payload diversity สูง.</p>
+      <h2>4.3 Protocol signatures</h2>
+      <pre><code>syn_flood = (
+    test["frame.len"].eq(54)
+    &amp; test["tcp.window_size"].eq(512)
+    &amp; test["tcp.flags.syn"].eq(1)
+    &amp; test["tcp.flags.ack"].eq(0)
+)
+
+dictionary_connect = (
+    test["mqtt.msgtype"].eq(1)
+    &amp; test["mqtt.kalive"].isin([60, 3600])
+)
+
+invalid_subscription = test["mqtt.msgtype"].isin([8, 9])
+
+publish_attack = (
+    test["mqtt.msgtype"].eq(3)
+    &amp; test["mqtt.len"].isin([19, 44])
+)</code></pre>
+      <h2>4.4 Rule union</h2>
+      <pre><code>labels = (
+    attack_stack
+    | attack_packet_shape
+    | syn_flood
+    | dictionary_connect
+    | invalid_subscription
+    | publish_attack
+)</code></pre>
+      <p>OR union เพิ่ม recall. Correction layer ด้านถัดไปทำหน้าที่รักษา precision.</p>
+    </section>
+
+    <section id="context">
+      <h1>5. Context และ hard negatives</h1>
+      <h2>5.1 PUBLISH context</h2>
+      <pre><code>labels |= (
+    test["mqtt.msgtype"].eq(3)
+    &amp; test["tcp.window_size"].eq(256)
+)</code></pre>
+      <p>นี่คือ family-level context gate. ไม่ใช่การ label ทุก PUBLISH row; ต้องพิจารณา stream, packet family และ source evidence ร่วมกัน.</p>
+      <h2>5.2 PINGRESP hard negative</h2>
+      <pre><code>pingresp_false_positive = (
+    test["frame.len"].eq(56)
+    &amp; test["tcp.window_size"].eq(253)
+    &amp; test["mqtt.msgtype"].eq(13)
+)
+labels &amp;= ~pingresp_false_positive</code></pre>
+      <div class="callout warning"><strong>Precedence:</strong> positive rule union → exclusion rule → final label. Model confidence สูงไม่ override known Normal family.</div>
+      <h2>5.3 Structural context</h2>
+      <ul>
+        <li>stream มี packet template ครบหรือไม่</li>
+        <li>packet อยู่ตำแหน่งใดใน sequence</li>
+        <li>มี packet ขาดหรือเกินจาก family หรือไม่</li>
+        <li>TCP flags/window/state transition สอดคล้องหรือไม่</li>
+        <li>candidate ชน Normal corpus หรือไม่</li>
+      </ul>
+    </section>
+
+    <section id="features">
+      <h1>6. Feature engineering สำหรับ residual analysis</h1>
+      <p>Core rules ใช้ raw protocol fields. สำหรับ residual ranking มีการเพิ่ม frequency features จาก <a href="../work/analyze_candidates.py"><code>work/analyze_candidates.py</code></a>.</p>
+      <h2>6.1 Frequency features</h2>
+      <p>นับการเกิดของ packet, TCP shape, MQTT shape และ stream-packet shape ใน train/test:</p>
+      <pre><code>train_hash = pd.util.hash_pandas_object(train[columns], index=False)
+test_hash = pd.util.hash_pandas_object(test[columns], index=False)
+train_counts = train_hash.value_counts()
+test["packet_train_count"] = (
+    test_hash.map(train_counts).fillna(0).astype("int32")
+)</code></pre>
+      <h2>6.2 Excess and novelty</h2>
+      <pre><code>test[f"{prefix}_excess"] = (
+    1 - normal_ratio * train_count / test_count
+).clip(0, 1)
+
+test["window_novel"] = (
+    ~test["tcp.window_size"].isin(normal_windows)
+)</code></pre>
+      <p><code>normal_ratio=0.07138</code> เป็น heuristic prior. ห้ามเรียกค่า excess ว่า calibrated probability.</p>
+      <h2>6.3 Candidate ranking score</h2>
+      <pre><code>candidate_score = (
+    0.45 * packet_excess
+    + 0.25 * tcp_excess
+    + 0.20 * stream_packet_excess
+    + 0.10 * rtt_novel
+)</code></pre>
+    </section>
+
+    <section id="ml">
+      <h1>7. Experimental ML models</h1>
+      <p>ML models ใช้เป็น audit signal และ residual ranking. ไม่ใช้เป็น final decision เพราะ labels ไม่สมบูรณ์และ source domains ต่างกัน.</p>
+      <h2>7.1 Pseudo-label ensemble</h2>
+      <div class="diagram">Normal train + pseudo-positive rows
+                |
+                v
+        sentinel imputation / numeric encoding
+                |
+  ExtraTrees + RandomForest + HistGradientBoosting
+                |
+           mean predict_proba</div>
+      <div class="table-wrap"><table><thead><tr><th>Model</th><th>Configuration</th></tr></thead><tbody>
+        <tr><td>ExtraTrees</td><td><code>n_estimators=500</code>, <code>min_samples_leaf=2</code>, <code>max_features=0.9</code>, balanced class weight</td></tr>
+        <tr><td>RandomForest</td><td><code>n_estimators=350</code>, <code>min_samples_leaf=2</code>, <code>max_features=0.8</code>, balanced subsample</td></tr>
+        <tr><td>HistGradientBoosting</td><td><code>learning_rate=0.06</code>, <code>max_iter=350</code>, <code>max_leaf_nodes=31</code>, <code>l2=2.0</code></td></tr>
+      </tbody></table></div>
+      <p>Source: <a href="../work/train_pseudo_model.py"><code>work/train_pseudo_model.py</code></a>. Fixed seed: <code>20260717</code>.</p>
+      <h2>7.2 External-reference ensemble</h2>
+      <p><a href="../work/train_external_model.py"><code>work/train_external_model.py</code></a> normalize external PCAP fields ให้เข้ากับ competition schema แล้ว train tree ensemble บน Normal + external attack reference.</p>
+      <div class="callout warning">External model อาจเรียนรู้ TCP stack หรือ capture source แทน attack semantics. ใช้เป็น supporting evidence ไม่ใช่ label oracle.</div>
+      <h2>7.3 IsolationForest</h2>
+      <div class="table-wrap"><table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody>
+        <tr><td><code>n_estimators</code></td><td>350</td></tr>
+        <tr><td><code>max_samples</code></td><td>4096</td></tr>
+        <tr><td><code>contamination</code></td><td><code>"auto"</code></td></tr>
+        <tr><td><code>random_state</code></td><td>20260719</td></tr>
+      </tbody></table></div>
+      <p>IsolationForest รู้ geometric outlier แต่ไม่รู้ MQTT semantics และ stream family. ต้องตรวจ hard negatives.</p>
+      <h2>7.4 Why ML is not final decision</h2>
+      <ol>
+        <li>pseudo positives มาจาก rule engine จึงเกิด circularity</li>
+        <li>attack class coverage ไม่สมบูรณ์</li>
+        <li>rare-normal ได้ probability สูง</li>
+        <li>external data มี domain shift</li>
+        <li>probability สูงไม่ใช่หลักฐาน causal attack context</li>
+      </ol>
+    </section>
+
+    <section id="validation">
+      <h1>8. Training, tuning และ validation</h1>
+      <h2>8.1 Train self-check</h2>
+      <pre><code>train_labels = attack_mask(train, train)
+if int(train_labels.sum()) != 0:
+    raise RuntimeError("Rules flagged normal training rows")</code></pre>
+      <p>นี่คือ guardrail ว่ากฎไม่ flag Normal train แต่ไม่ใช่ proof ของ recall เพราะ train ไม่มี attack labels.</p>
+      <h2>8.2 Tuning axes</h2>
+      <div class="table-wrap"><table><thead><tr><th>Axis</th><th>Example</th><th>Risk</th></tr></thead><tbody>
+        <tr><td>Rule strictness</td><td>เพิ่ม/ลด fields ใน signature</td><td>precision-recall trade-off</td></tr>
+        <tr><td>Normal profile</td><td>window, packet shape, RTT set</td><td>device/capture shift</td></tr>
+        <tr><td>Context width</td><td>packet → stream → transaction</td><td>leakage หรือ overgeneralization</td></tr>
+        <tr><td>ML threshold</td><td>probability cutoff</td><td>pseudo-label bias</td></tr>
+        <tr><td>Imputation</td><td>sentinel `-1`, median, model-based</td><td>missing semantics distortion</td></tr>
+      </tbody></table></div>
+      <h2>8.3 Validation layers</h2>
+      <ol>
+        <li><strong>Schema:</strong> row count, columns, Id uniqueness, binary labels</li>
+        <li><strong>Self-consistency:</strong> rule engine ไม่ flag Normal train</li>
+        <li><strong>Group validation:</strong> split ตาม capture/session ไม่ random packet</li>
+        <li><strong>Hard negatives:</strong> PINGRESP, normal PUBLISH, TCP control packets</li>
+        <li><strong>Source evidence:</strong> exact, shape, stream, RTT/full-feature support</li>
+      </ol>
+    </section>
+
+    <section id="errors">
+      <h1>9. Error analysis</h1>
+      <div class="table-wrap"><table><thead><tr><th>Symptom</th><th>Likely cause</th><th>Correction</th></tr></thead><tbody>
+        <tr><td>Positive เยอะผิดปกติ</td><td>novelty rule กว้าง</td><td>เพิ่ม pair/context gate</td></tr>
+        <tr><td>PINGRESP ติด attack</td><td>confidence แทน semantics</td><td>hard-negative exclusion</td></tr>
+        <tr><td>SYN family ขาดบาง row</td><td>packet rule ไม่มอง stream</td><td>structural context</td></tr>
+        <tr><td>External score สูงเกือบทุกแถว</td><td>domain shift</td><td>normalize source + grouped validation</td></tr>
+        <tr><td>Train self-check fail</td><td>rule โดน Normal</td><td>ตรวจ missing, profile, signature</td></tr>
+      </tbody></table></div>
+      <h2>False positives</h2>
+      <ul><li>rare PINGRESP</li><li>normal PUBLISH ที่ payload/window ใหม่</li><li>TCP window shift จาก device stack</li><li>packet shape ที่ดูเหมือน attack แต่ไม่มี flow context</li></ul>
+      <h2>False negatives</h2>
+      <ul><li>attack ที่ใช้ packet format เหมือน Normal</li><li>attack ที่เห็นจาก sequence/frequency มากกว่า field value</li><li>MQTT transaction ที่ต้องดูหลาย packet</li><li>burst behavior ที่ raw packet ไม่ต่างจาก Normal</li></ul>
+    </section>
+
+    <section id="limits">
+      <h1>10. Limitations และ next steps</h1>
+      <h2>ข้อจำกัด</h2>
+      <ol>
+        <li>ไม่มี attack labels ใน train จึงวัด true recall ได้ไม่เต็มรูปแบบ</li>
+        <li>rule coverage จำกัดตาม attack families ที่รู้จัก</li>
+        <li>window และ packet lengths อาจเรียนรู้ environment มากกว่า behavior</li>
+        <li>stream-based analysis ผูกกับ capture structure</li>
+        <li>pseudo-label models มี circularity</li>
+        <li>external PCAP มี domain shift</li>
+        <li>random row split ให้ validation optimistic ได้</li>
+      </ol>
+      <h2>Production architecture</h2>
+      <div class="diagram">Protocol rules      -> high-precision anchors
+Flow model          -> context and recall
+Sequence model      -> transaction semantics
+Hard-negative bank  -> precision guardrail</div>
+      <h2>Flow-level features</h2>
+      <ul><li>packet/byte count</li><li>direction ratio</li><li>inter-arrival distribution</li><li>burstiness</li><li>SYN/ACK/RESET transitions</li><li>MQTT transaction sequence</li></ul>
+      <h2>MQTT transaction features</h2>
+      <pre><code>CONNECT -> CONNACK -> PUBLISH
+CONNECT -> CONNACK -> SUBSCRIBE -> SUBACK
+PINGREQ -> PINGRESP</code></pre>
+      <p>เป้าหมายต่อไปคือ group-held-out learning บน flow/session aggregates โดยยังคง protocol rules เป็น explainable anchors.</p>
+    </section>
+
+    <section id="references">
+      <h1>11. Source files และ references</h1>
+      <h2>Repository sources</h2>
+      <ul>
+        <li><a href="../outputs/predict_final_model.py"><code>outputs/predict_final_model.py</code></a> — core deterministic rules</li>
+        <li><a href="../work/submit_improved.py"><code>work/submit_improved.py</code></a> — train self-check and baseline rules</li>
+        <li><a href="../work/analyze_candidates.py"><code>work/analyze_candidates.py</code></a> — frequency features</li>
+        <li><a href="../work/train_pseudo_model.py"><code>work/train_pseudo_model.py</code></a> — pseudo-label tree ensemble</li>
+        <li><a href="../work/train_external_model.py"><code>work/train_external_model.py</code></a> — external-reference ensemble</li>
+        <li><a href="../work/deep_audit.py"><code>work/deep_audit.py</code></a> — tree, isolation และ source-support audit</li>
+        <li><a href="SuperAI6_IoT_Attack_Detection_Report_TH.html"><code>SuperAI6_IoT_Attack_Detection_Report_TH.html</code></a> — project evidence report</li>
+      </ul>
+      <h2>External references</h2>
+      <ul>
+        <li><a href="https://docs.oasis-open.org/mqtt/mqtt/v3.1.1/mqtt-v3.1.1.html">OASIS MQTT Version 3.1.1</a> — message types and protocol semantics</li>
+        <li><a href="https://www.wireshark.org/docs/dfref/m/mqtt.html">Wireshark MQTT Display Filter Reference</a> — field definitions</li>
+        <li><a href="https://www.kaggle.com/competitions/superai6-iot-attack-detection">SuperAI6 IoT Attack Detection</a> — dataset context</li>
+      </ul>
+      <div class="callout"><strong>Key takeaways:</strong> Normal-only ไม่ได้บังคับให้ใช้ anomaly score เดี่ยว; protocol semantics สร้าง precision anchors; context และ hard negatives สำคัญพอๆ กับ model; core detector ต้อง reproducible และ inspectable.</div>
+    </section>
+  </main>
+</div>
+<footer class="footer">Technical knowledge document · TCP + MQTT · Normal-only anomaly detection · Prepared for knowledge sharing</footer>
+</body>
+</html>

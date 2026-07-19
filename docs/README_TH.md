@@ -16,6 +16,7 @@
 | `../presentation/SuperAI6_IoT_Attack_Detection_Offline02_Presentation_TH.pptx` | พรีเซนต์ไฟล์ที่เลือก | 11 slides จาก Black and Gray Gradient template, อธิบาย offline_02, เทคนิค และคะแนน Private/Public |
 | `../presentation/SuperAI6_IoT_Attack_Detection_Offline02_Presentation_TH.pdf` | เปิดสำรอง | PDF ที่ render จาก PPTX และตรวจ layout แล้ว |
 | `SuperAI6_IoT_Attack_Detection_Offline02_Speaker_Notes_TH.md` | ซ้อมพูด | คำพูดภาษาไทยแบบเป็นธรรมชาติ พร้อมข้อมูลไฟล์ เทคนิค code และข้อควรระวังเรื่อง score |
+| `SuperAI6_IoT_Attack_Detection_Offline02_Slide_Image_Guide_TH.md` | เตรียมภาพ | อธิบายครบ 11 สไลด์ว่าควรแคปภาพอะไร วางตรงไหน ใช้ caption ใด และควรหลีกเลี่ยงอะไร |
 | `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.html` | พรีเซนต์ผ่าน browser | ไฟล์เดียวจบ 12 slides มี notes, keyboard, fullscreen, touch และ print/PDF |
 | `SuperAI6_Presentation_Speaker_Notes_TH.md` | ซ้อมพูด | script แยกตาม slide |
 | `SuperAI6_Slide_Handoff_TH.md` | ส่งให้ AI ทำสไลด์ต่อ | brief ครบ 12 slides, code จริง, score, references และ checklist |

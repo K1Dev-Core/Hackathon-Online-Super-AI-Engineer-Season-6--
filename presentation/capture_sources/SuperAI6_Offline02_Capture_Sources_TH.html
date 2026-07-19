@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Offline02 Capture Sources</title>
+  <style>
+    :root { --bg:#111318; --panel:#1b1e24; --panel2:#242832; --text:#f3f4f6; --muted:#b8bec8; --line:#3b414d; --accent:#d9dde4; --green:#a8d5ba; --blue:#b5cbe9; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:linear-gradient(135deg,#0d0f13 0%,#1a1d23 55%,#0f1115 100%); color:var(--text); font-family:Tahoma,"Noto Sans Thai",sans-serif; line-height:1.55; }
+    main { width:min(1180px,92vw); margin:0 auto; padding:44px 0 80px; }
+    header { border-bottom:1px solid var(--line); padding-bottom:28px; margin-bottom:30px; }
+    h1 { margin:0 0 10px; font-size:clamp(30px,5vw,58px); letter-spacing:.02em; }
+    h2 { margin:0 0 14px; font-size:25px; }
+    h3 { margin:0 0 8px; font-size:18px; color:var(--accent); }
+    p { margin:8px 0; color:var(--muted); }
+    .lead { max-width:800px; font-size:18px; }
+    .meta { display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
+    .tag { border:1px solid var(--line); background:#16191e; border-radius:999px; padding:6px 12px; color:var(--muted); font-size:13px; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+    .card { background:rgba(27,30,36,.94); border:1px solid var(--line); border-radius:16px; padding:22px; box-shadow:0 12px 30px rgba(0,0,0,.16); }
+    .wide { grid-column:1/-1; }
+    .number { color:var(--blue); font:700 13px ui-monospace,SFMono-Regular,Menlo,monospace; letter-spacing:.12em; text-transform:uppercase; margin-bottom:6px; }
+    .purpose { color:var(--green); font-weight:700; margin:0 0 12px; }
+    pre { margin:14px 0 0; padding:15px; background:#0c0e12; border:1px solid #303641; border-radius:10px; overflow:auto; color:#e8ebef; font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace; white-space:pre-wrap; }
+    table { width:100%; border-collapse:collapse; margin-top:12px; font-size:14px; }
+    th,td { border-bottom:1px solid var(--line); padding:9px 8px; text-align:left; vertical-align:top; }
+    th { color:var(--accent); font-weight:700; }
+    td { color:var(--muted); }
+    .score { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:16px 0; }
+    .scorebox { background:#0e1014; border:1px solid var(--line); border-radius:12px; padding:16px; }
+    .scorebox small { display:block; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
+    .scorebox strong { display:block; margin-top:4px; font-size:34px; color:var(--text); }
+    .path { display:block; color:var(--blue); font:12px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace; overflow-wrap:anywhere; margin-top:10px; }
+    a { color:var(--blue); }
+    .note { border-left:3px solid var(--green); padding:10px 14px; background:#161a1b; border-radius:0 9px 9px 0; color:var(--muted); margin-top:14px; }
+    footer { margin-top:30px; padding-top:22px; border-top:1px solid var(--line); color:var(--muted); font-size:14px; }
+    @media (max-width:800px) { .grid { grid-template-columns:1fr; } .wide { grid-column:auto; } .score { grid-template-columns:1fr; } }
+    @media print { body { background:#111318; } .card { break-inside:avoid; } a { color:var(--text); } }
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="number">CAPTURE BOARD / OFFLINE02</div>
+    <h1>ภาพต้นทางสำหรับแปะสไลด์</h1>
+    <p class="lead">เปิดหน้านี้แล้วแคป card ตามหมายเลขสไลด์ได้เลย ภาพถูกจัดให้ตรงกับเรื่องที่เล่าและไฟล์ที่ใช้จริง ไม่ต้องแคปหน้าจอ raw ยาว ๆ ทั้งหน้า</p>
+    <div class="meta">
+      <span class="tag">offline_02</span>
+      <span class="tag">Private F1 0.97198</span>
+      <span class="tag">Public F1 0.96267</span>
+      <span class="tag">TCP + MQTT</span>
+      <span class="tag">AI-assisted development</span>
+    </div>
+  </header>
+
+  <section class="grid">
+    <article class="card">
+      <div class="number">SLIDE 02</div>
+      <h2>โจทย์ Normal-only</h2>
+      <p class="purpose">แคป card นี้ไปวางหน้าปัญหา</p>
+      <table>
+        <tr><th>Dataset</th><th>Rows</th><th>ความหมาย</th></tr>
+        <tr><td>Train</td><td>100,000</td><td>Normal only ใช้สร้าง Normal profile</td></tr>
+        <tr><td>Test</td><td>10,000</td><td>ต้องทำนาย 0 หรือ 1</td></tr>
+      </table>
+      <pre>0 = Normal
+1 = Attack
+
+Train ไม่มี Attack label
+จึงใช้ One-Class Anomaly Detection</pre>
+      <a class="path" href="../../data/X_train.csv">เปิด data/X_train.csv</a>
+      <a class="path" href="../../data/X_test.csv">เปิด data/X_test.csv</a>
+    </article>
+
+    <article class="card">
+      <div class="number">SLIDE 03</div>
+      <h2>ข้อมูลและ protocol</h2>
+      <p class="purpose">แคปตารางนี้ไปอธิบายว่าแต่ละ feature ทำหน้าที่อะไร</p>
+      <table>
+        <tr><th>กลุ่ม</th><th>Feature</th><th>อ่านอะไร</th></tr>
+        <tr><td>TCP</td><td>frame.len / tcp.len</td><td>ขนาด packet และ payload</td></tr>
+        <tr><td>TCP</td><td>window / SYN / ACK / RST</td><td>state ของ connection</td></tr>
+        <tr><td>Context</td><td>tcp.stream</td><td>flow ที่ packet อยู่</td></tr>
+        <tr><td>MQTT</td><td>msgtype / kalive</td><td>ประเภท message และ keep-alive</td></tr>
+        <tr><td>MQTT</td><td>mqtt.len / topic_len</td><td>ขนาด message และ topic</td></tr>
+      </table>
+      <div class="note">หนึ่งแถวไม่ใช่ตัวเลขเดี่ยว ต้องอ่าน packet shape + protocol meaning + stream context</div>
+      <a class="path" href="../../data/X_train.csv">เปิด raw feature columns จาก X_train.csv</a>
+    </article>
+
+    <article class="card wide">
+      <div class="number">SLIDE 04</div>
+      <h2>One-Class Detection: เรียนรู้ Normal ก่อน</h2>
+      <p class="purpose">แคป flow นี้ไปวางแทนภาพ diagram หรือใช้เป็นภาพอธิบายแนวคิด</p>
+      <pre>Normal Train
+    ↓
+Normal Profile
+    ↓
+Test Traffic
+    ↓
+Candidate Deviation
+    ↓
+Protocol + Context Validation
+    ↓
+Final label</pre>
+      <p>แนวคิดเหมือน รปภ. ที่รู้จักพฤติกรรมปกติของคนในอาคาร แม้ไม่เคยเห็นผู้บุกรุกทุกแบบ ก็ยังตรวจพฤติกรรมที่แตกต่างจากบริบทได้</p>
+      <div class="note">อย่าเขียนว่า anomaly ทุกจุดคือ Attack ให้เขียนว่า anomaly เป็น candidate ที่ต้องตรวจเพิ่ม</div>
+      <a class="path" href="../../docs/SuperAI6_IoT_Attack_Detection_Technical_DeepDive_TH.html">เปิด technical deep dive</a>
+    </article>
+
+    <article class="card">
+      <div class="number">SLIDE 05</div>
+      <h2>Feature ที่มีความหมาย</h2>
+      <p class="purpose">แคป table นี้ไปอธิบายว่าทำไมเลือก TCP + MQTT</p>
+      <table>
+        <tr><th>Feature</th><th>คำถามที่ตอบ</th></tr>
+        <tr><td>frame.len</td><td>packet มีขนาดเท่าไร</td></tr>
+        <tr><td>tcp.len</td><td>มี payload หรือไม่</td></tr>
+        <tr><td>tcp.window_size</td><td>flow control มีรูปแบบอย่างไร</td></tr>
+        <tr><td>SYN/ACK/RST</td><td>connection อยู่ state ใด</td></tr>
+        <tr><td>tcp.stream</td><td>packet อยู่ใน flow ไหน</td></tr>
+        <tr><td>mqtt.msgtype</td><td>CONNECT/PUBLISH/SUBSCRIBE/PINGRESP</td></tr>
+        <tr><td>mqtt.kalive</td><td>client keep-alive เป็นแบบใด</td></tr>
+      </table>
+      <a class="path" href="../../docs/SuperAI6_IoT_Attack_Detection_Report_TH.html">เปิด report ที่มี feature table</a>
+    </article>
+
+    <article class="card">
+      <div class="number">SLIDE 06</div>
+      <h2>Rule engine และ hard negative</h2>
+      <p class="purpose">แคป code นี้ไปอธิบายเทคนิคจริง</p>
+      <pre>is_syn_signature = (
+    frame_len == 54
+    and tcp_window_size == 512
+    and syn == 1
+    and ack == 0
+)
+
+is_hard_negative = (
+    frame_len == 56
+    and tcp_window_size == 253
+    and mqtt_msgtype == 13
+)</pre>
+      <p>กฎสร้าง evidence ก่อน จากนั้นใช้ stream context ตรวจซ้ำ และใช้ PINGRESP เป็น hard negative กัน false positive</p>
+      <a class="path" href="../../outputs/predict_final_model.py">เปิด outputs/predict_final_model.py</a>
+    </article>
+
+    <article class="card">
+      <div class="number">SLIDE 07</div>
+      <h2>AI + Human Validation</h2>
+      <p class="purpose">แคป workflow นี้เพื่ออธิบายว่า AI ช่วยตรงไหน</p>
+      <pre>AI ช่วยเสนอ
+  ↓
+คนอ่าน code และเลือก hypothesis
+  ↓
+ทดลองกับข้อมูลจริง
+  ↓
+ตรวจ TCP / MQTT / stream
+  ↓
+สร้าง hard negative
+  ↓
+ปรับ rule และทดสอบซ้ำ</pre>
+      <table>
+        <tr><th>AI ช่วย</th><th>คนตรวจ</th></tr>
+        <tr><td>อธิบาย feature, ร่าง code, เสนอ experiment</td><td>protocol meaning, context, final judgment</td></tr>
+        <tr><td>จัดอันดับ residual rows</td><td>หาหลักฐานหักล้างและ false positive</td></tr>
+      </table>
+      <a class="path" href="../../docs/SuperAI6_IoT_Attack_Detection_Offline02_Methodology_AI_Assisted_TH.md">เปิด methodology เรื่อง AI-assisted development</a>
+    </article>
+
+    <article class="card wide">
+      <div class="number">SLIDE 08</div>
+      <h2>ไฟล์ที่เลือกและคะแนน</h2>
+      <p class="purpose">ภาพหลักที่ต้องแปะ: ใช้ card นี้เป็นต้นแบบ แล้วแคปหน้า Kaggle จริงเพิ่มถ้าต้องการ</p>
+      <pre>submission_offline_02_hedge_payload132.csv
+
+Rows: 10,000
+Positive labels: 2,811
+
+baseline
+  + structural Id=9816
+  + payload hedge Id=1145</pre>
+      <div class="score">
+        <div class="scorebox"><small>Private F1</small><strong>0.97198</strong></div>
+        <div class="scorebox"><small>Public F1</small><strong>0.96267</strong></div>
+      </div>
+      <div class="note">คะแนนเป็นผลที่ผู้ใช้รายงานจาก Kaggle ควรแคปหน้า submission ให้เห็นชื่อไฟล์และตัวเลขในภาพเดียวกัน</div>
+      <a class="path" href="../../outputs/offline_benchmark_candidates/submission_offline_02_hedge_payload132.csv">เปิด CSV ผลลัพธ์</a>
+      <a class="path" href="../../docs/SuperAI6_IoT_Attack_Detection_Report_TH.html">เปิด report ที่มี score evidence</a>
+    </article>
+
+    <article class="card">
+      <div class="number">SLIDE 09</div>
+      <h2>Hard negative case</h2>
+      <p class="purpose">ภาพเสริม: ใช้อธิบายว่าทำไม rare ไม่เท่ากับ Attack</p>
+      <pre>ดูแปลกจาก feature เดี่ยว
+        ↓
+ตรวจ tcp.stream และ MQTT type
+        ↓
+พบว่าเป็น PINGRESP ใน flow ปกติ
+        ↓
+ตัดออกด้วย hard negative</pre>
+      <p>กรณีนี้ช่วยเล่าเรื่อง false positive ได้ดีกว่าการแปะกราฟที่ไม่มีบริบท</p>
+      <a class="path" href="../../outputs/pcap_normal_shape_support.csv">เปิด PCAP normal shape support</a>
+      <a class="path" href="../../outputs/pcap_evidence_decision_report.md">เปิด evidence decision report</a>
+    </article>
+
+    <article class="card">
+      <div class="number">SLIDE 10</div>
+      <h2>สรุป pipeline</h2>
+      <p class="purpose">ไม่จำเป็นต้องแคปภาพใหม่ ใช้ flow นี้เป็น summary card</p>
+      <pre>Learn Normal
+    ↓
+Read TCP + MQTT behavior
+    ↓
+Validate stream context
+    ↓
+Remove false positives
+    ↓
+Explain result
+
+offline_02
+Private 0.97198
+Public  0.96267</pre>
+      <a class="path" href="../../docs/SuperAI6_IoT_Attack_Detection_Offline02_Concept_and_Human_Speech_TH.md">เปิด concept + human speech</a>
+    </article>
+
+    <article class="card wide">
+      <div class="number">SOURCE FILES</div>
+      <h2>ไฟล์ต้นทางสำหรับแคปจริง</h2>
+      <table>
+        <tr><th>ใช้กับสไลด์</th><th>ไฟล์</th><th>แคปส่วนไหน</th></tr>
+        <tr><td>2–3</td><td><a href="../../data/X_train.csv">data/X_train.csv</a> / <a href="../../data/X_test.csv">data/X_test.csv</a></td><td>header, จำนวนแถว, ชื่อ feature, ตัวอย่าง row</td></tr>
+        <tr><td>5</td><td><a href="../../docs/SuperAI6_IoT_Attack_Detection_Report_TH.html">Report HTML</a></td><td>feature table และคำอธิบาย TCP/MQTT</td></tr>
+        <tr><td>6</td><td><a href="../../outputs/predict_final_model.py">outputs/predict_final_model.py</a></td><td>normal profile, SYN rule, hard negative</td></tr>
+        <tr><td>7</td><td><a href="../../docs/SuperAI6_IoT_Attack_Detection_Offline02_Methodology_AI_Assisted_TH.md">AI-assisted methodology</a></td><td>AI ช่วยอะไร และคนตรวจอะไร</td></tr>
+        <tr><td>8</td><td><a href="../../outputs/offline_benchmark_candidates/submission_offline_02_hedge_payload132.csv">selected CSV</a> + Kaggle submission page</td><td>ชื่อไฟล์, schema, Private/Public score</td></tr>
+        <tr><td>9</td><td><a href="../../outputs/pcap_normal_shape_support.csv">PCAP normal support</a> / <a href="../../outputs/pcap_attack_shape_support.csv">PCAP attack support</a></td><td>หลักฐาน normal/attack shape และ hard negative</td></tr>
+        <tr><td>ทั้งหมด</td><td><a href="../../presentation/SuperAI6_IoT_Attack_Detection_Offline02_Presentation_TH.pptx">PPTX</a></td><td>ดูตำแหน่ง card และภาพประกอบเดิม</td></tr>
+      </table>
+      <div class="note">อย่าแคป API token, path ที่มีข้อมูลส่วนตัว, raw table ยาวทั้งหน้า หรือ leaderboard ของ version อื่น</div>
+    </article>
+  </section>
+
+  <footer>
+    ภาพสำคัญที่สุด: Slide 2 Train/Test, Slide 5 TCP/MQTT features, Slide 6 code rule, Slide 7 AI-human workflow, Slide 8 Kaggle result. Slide 1, 10, 11 ใช้ภาพน้อยเพื่อให้สไลด์โล่งและอ่านง่าย
+  </footer>
+</main>
+</body>
+</html>

@@ -6,6 +6,10 @@
 
 `submission_offline_02_hedge_payload132.csv`
 
+หน้าเดียวสำหรับเปิดดู card และไฟล์ต้นทางที่จะใช้แคป:
+
+`presentation/capture_sources/SuperAI6_Offline02_Capture_Sources_TH.html`
+
 ข้อมูลสำคัญที่ต้องใช้ให้ตรงกันทุกภาพและทุกสไลด์:
 
 - Train มีข้อมูล Normal เท่านั้น

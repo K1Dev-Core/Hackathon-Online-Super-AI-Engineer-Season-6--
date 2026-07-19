@@ -13,6 +13,9 @@
 | `SuperAI6_IoT_Attack_Detection_Technical_DeepDive_TH.html` | เปิดผ่าน browser | technical deep dive พร้อม code, tables และ references |
 | `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.pptx` | พรีเซนต์ | 17 slides, 16:9, speaker notes ฝังในไฟล์ |
 | `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.pdf` | เปิดสำรอง | PDF ที่ตรวจ Thai glyph และ layout แล้ว |
+| `../presentation/SuperAI6_IoT_Attack_Detection_Offline02_Presentation_TH.pptx` | พรีเซนต์ไฟล์ที่เลือก | 11 slides จาก Black and Gray Gradient template, อธิบาย offline_02, เทคนิค และคะแนน Private/Public |
+| `../presentation/SuperAI6_IoT_Attack_Detection_Offline02_Presentation_TH.pdf` | เปิดสำรอง | PDF ที่ render จาก PPTX และตรวจ layout แล้ว |
+| `SuperAI6_IoT_Attack_Detection_Offline02_Speaker_Notes_TH.md` | ซ้อมพูด | คำพูดภาษาไทยแบบเป็นธรรมชาติ พร้อมข้อมูลไฟล์ เทคนิค code และข้อควรระวังเรื่อง score |
 | `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.html` | พรีเซนต์ผ่าน browser | ไฟล์เดียวจบ 12 slides มี notes, keyboard, fullscreen, touch และ print/PDF |
 | `SuperAI6_Presentation_Speaker_Notes_TH.md` | ซ้อมพูด | script แยกตาม slide |
 | `SuperAI6_Slide_Handoff_TH.md` | ส่งให้ AI ทำสไลด์ต่อ | brief ครบ 12 slides, code จริง, score, references และ checklist |

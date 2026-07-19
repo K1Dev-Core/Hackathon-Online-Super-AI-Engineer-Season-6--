@@ -4,6 +4,7 @@
 
 **ผู้เข้าแข่งขัน:** 610686-วชิรวิทย์  
 **โจทย์:** การตรวจจับการโจมตีบนเครือข่าย IoT ที่สื่อสารผ่าน MQTT  
+**Selected artifact:** `outputs/offline_benchmark_candidates/submission_offline_02_hedge_payload132.csv`
 **ผลลัพธ์ไฟล์ที่เลือก:** Public F1 = **0.96267**, Private F1 = **0.97198**  
 **แนวทางหลัก:** Precision-first anomaly detection ด้วยกฎจากโปรโตคอล โครงสร้าง TCP stream และการตรวจสอบย้อนกลับจาก PCAP
 
@@ -17,8 +18,8 @@
 
 ผลลัพธ์สำคัญ:
 
-- เพิ่ม Public F1 จาก `0.54898` ในรอบแรกเป็น `0.96267` ในไฟล์สุดท้ายที่เลือก
-- ไฟล์ที่เลือกได้ Private F1 `0.97198`
+- ไฟล์ที่เลือกคือ `submission_offline_02_hedge_payload132.csv` มี 10,000 rows และ 2,811 positive labels
+- ไฟล์ที่เลือกได้ Public F1 `0.96267` และ Private F1 `0.97198`
 - ไฟล์ `submission_v8_micro_best.csv` ได้ Private F1 `0.97232` แม้ Public F1 ต่ำกว่าเล็กน้อยที่ `0.96193` แสดงความเสี่ยงของการเลือกโมเดลจาก Public leaderboard เพียงอย่างเดียว
 - สแกน attack PCAP ครบ `313/313` ไฟล์ ประมาณ `30.4 GB` และ `215.6 ล้าน` TCP packets
 - สแกน normal PCAP ครบ `49/49` ไฟล์ ประมาณ `7.0 GB` และ `45.4 ล้าน` TCP packets
@@ -261,7 +262,7 @@ Residual ranking พบ TCP payload รูปแบบ 189-byte frame, 135-byte 
 | structural `Id=9816` | 0.96230 | 0.97198 | สมมติฐาน stream completion สำเร็จ |
 | shape `Id=8150` | 0.96196 | 0.97198 | สมมติฐาน packet shape ถูกยกเลิก |
 | `v8_micro_best` | 0.96193 | 0.97232 | Private ดีกว่า แม้ Public ต่ำกว่า |
-| payload `Id=1145` | **0.96267** | **0.97198** | Public ดีที่สุดของไฟล์ที่ส่ง |
+| payload `Id=1145` | **0.96267** | **0.97198** | payload hedge ใน selected offline_02 |
 
 # 9. การตรวจสอบด้วยข้อมูลต้นทางและ PCAP
 
@@ -312,7 +313,7 @@ Residual ranking พบ TCP payload รูปแบบ 189-byte frame, 135-byte 
 ## 11.1 คะแนน
 
 - Baseline ผู้จัด: Public `0.62303`, Private `0.65030`
-- ไฟล์ที่เลือกของโครงการ: Public `0.96267`, Private `0.97198`
+- Selected artifact `submission_offline_02_hedge_payload132.csv`: Public `0.96267`, Private `0.97198`
 - Private leaderboard อันดับสูงสุด: `0.98149`
 - อันดับสอง: `0.97879`
 - กลุ่มคะแนนถัดมา: `0.97198` หลายทีม รวมทีม `610686-วชิรวิทย์`
@@ -375,7 +376,7 @@ python outputs/predict_final_model.py \
 ไฟล์ที่เลือก:
 
 ```text
-outputs/submission_current_best_96267.csv
+outputs/offline_benchmark_candidates/submission_offline_02_hedge_payload132.csv
 rows       = 10,000
 positives  = 2,811
 sha256     = 2fe54d9dd8fc524d605fb0115941e896c86d09a6be5485d1ab626f66375c03a4
@@ -446,7 +447,7 @@ candidate ใหม่ควรผ่านทุกเงื่อนไข:
 | Artifact | หน้าที่ |
 |---|---|
 | `outputs/predict_final_model.py` | deterministic rule predictor |
-| `outputs/submission_current_best_96267.csv` | ไฟล์ที่ได้ Public 0.96267 |
+| `outputs/offline_benchmark_candidates/submission_offline_02_hedge_payload132.csv` | selected upload artifact, Public 0.96267 / Private 0.97198 |
 | `outputs/submission_next_01_twin_payload132.csv` | candidate ถัดไปจาก exact feature twin |
 | `outputs/offline_benchmark_report.md` | Monte Carlo และ sensitivity analysis |
 | `outputs/pcap_attack_shape_support.csv` | attack PCAP profile support |
@@ -456,5 +457,13 @@ candidate ใหม่ควรผ่านทุกเงื่อนไข:
 
 # ภาคผนวก C: ข้อความนำเสนอ 60 วินาที
 
-“โจทย์นี้มีข้อมูลฝึกที่เป็น Normal ทั้งหมด จึงไม่ใช่ classification แบบทั่วไป ผมเริ่มจากสร้าง normal profile แล้วใช้ความหมายของ TCP และ MQTT ระบุรูปแบบโจมตีที่อธิบายได้ จากนั้นตัด false positives ด้วย controlled probes ตรวจความครบถ้วนระดับ stream และสแกน PCAP ต้นทางกว่า 37 GB เพื่อยืนยันหรือหักล้าง candidate ผลคือคะแนนเพิ่มจาก Public 0.54898 เป็น 0.96267 และ Private 0.97198 บทเรียนสำคัญคือ packet anomaly เพียงอย่างเดียวไม่พอ ต้องใช้ protocol context, flow structure และการเลือกโมเดลที่ไม่ overfit Public leaderboard”
+“โจทย์นี้มีข้อมูลฝึกเป็น Normal ทั้งหมด จึงไม่ใช่ classification แบบทั่วไป ผมเริ่มจากสร้าง normal profile แล้วใช้ความหมายของ TCP และ MQTT ระบุรูปแบบโจมตีที่อธิบายได้ จากนั้นตัด false positives ด้วย controlled probes ตรวจความครบถ้วนระดับ stream และเลือกไฟล์ `submission_offline_02_hedge_payload132.csv` ซึ่งมี Public 0.96267 และ Private 0.97198 บทเรียนสำคัญคือ packet anomaly เพียงอย่างเดียวไม่พอ ต้องใช้ protocol context, flow structure และ falsification”
 
+# ภาคผนวก D: แหล่งอ้างอิง
+
+- [Kaggle — SuperAI6 IoT Attack Detection](https://www.kaggle.com/competitions/superai6-iot-attack-detection)
+- [OASIS — MQTT Version 3.1.1](https://docs.oasis-open.org/mqtt/mqtt/v3.1.1/mqtt-v3.1.1.html)
+- [Wireshark — MQTT Display Filter Reference](https://www.wireshark.org/docs/dfref/m/mqtt.html)
+- `outputs/predict_final_model.py` — deterministic rule detector
+- `outputs/offline_benchmark_report.md` — offline simulation and guardrails
+- `docs/artifact_checksums.sha256` — artifact checksum manifest

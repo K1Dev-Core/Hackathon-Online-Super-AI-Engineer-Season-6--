@@ -15,6 +15,7 @@
   .eyebrow { color:var(--cyan); font-size:9pt; font-weight:700; letter-spacing:.11em; text-transform:uppercase; }
   .cover h1 { page-break-before:auto; font-size:30pt; line-height:1.05; margin:4mm 0 5mm; color:#000; }
   .subtitle { max-width:130mm; color:var(--muted); font-size:13pt; line-height:1.35; }
+  .artifact-id { margin-top:4mm; color:var(--navy2); font:700 9pt/1.4 "Courier New",monospace; overflow-wrap:anywhere; }
   .meta { display:flex; justify-content:space-between; margin-top:12mm; color:var(--muted); font-size:9.5pt; }
   .score-row { display:grid; grid-template-columns:1fr 1fr; gap:5mm; margin-top:10mm; }
   .score { background:var(--navy2); color:white; padding:5mm; border-left:2mm solid var(--cyan); }
@@ -51,23 +52,36 @@
   <div class="eyebrow">Super AI Engineer Season 6 / Design & Technical Report</div>
   <h1>The IoT Attack Detection Challenge</h1>
   <div class="subtitle">การตรวจจับการโจมตีบนเครือข่าย IoT ด้วย Protocol Rules, Stream Structure และ PCAP Evidence</div>
+  <div class="artifact-id">SELECTED ARTIFACT: outputs/offline_benchmark_candidates/submission_offline_02_hedge_payload132.csv</div>
   <div class="score-row"><div class="score"><small>PUBLIC F1</small><strong>0.96267</strong></div><div class="score"><small>PRIVATE F1</small><strong>0.97198</strong></div></div>
   <div class="meta"><span>610686-วชิรวิทย์</span><span>กรกฎาคม 2569</span></div>
 </section>
-<section class="toc"><h1>สารบัญ</h1><ol><li>1. บทสรุปผู้บริหาร</li><li>2. โจทย์และเงื่อนไขการแข่งขัน</li><li>3. ข้อมูลและคุณลักษณะ</li><li>4. เหตุผลที่ไม่ใช้ Autoencoder อย่างเดียว</li><li>5. สถาปัตยกรรมแนวทาง</li><li>6. กฎตรวจจับหลัก</li><li>7. Precision corrections และ structural completion</li><li>8. Controlled leaderboard experiments</li><li>9. การตรวจสอบด้วยข้อมูลต้นทางและ PCAP</li><li>10. การจัดการ F1 และ candidate precision</li><li>11. ผลสุดท้ายและการตีความ</li><li>12. สิ่งที่ลองแล้วไม่สำเร็จ</li><li>13. Reproducibility และการควบคุมคุณภาพ</li><li>14. แนวทางพัฒนาต่อบนเครื่องแรง</li><li>15. สรุป</li><li>ภาคผนวก A: MQTT message types ที่ใช้</li><li>ภาคผนวก B: Artifact สำคัญ</li><li>ภาคผนวก C: ข้อความนำเสนอ 60 วินาที</li></ol></section>
+<section class="toc"><h1>สารบัญ</h1><ol><li>1. บทสรุปผู้บริหารและ selected artifact</li><li>2. โจทย์และเงื่อนไขการแข่งขัน</li><li>3. ข้อมูลและคุณลักษณะ</li><li>4. เหตุผลที่ไม่ใช้ Autoencoder อย่างเดียว</li><li>5. สถาปัตยกรรมแนวทาง</li><li>6. กฎตรวจจับหลัก</li><li>7. Precision corrections และ structural completion</li><li>8. Controlled leaderboard experiments</li><li>9. การตรวจสอบด้วยข้อมูลต้นทางและ PCAP</li><li>10. การจัดการ F1 และ candidate precision</li><li>11. ผลสุดท้ายและการตีความ</li><li>12. สิ่งที่ลองแล้วไม่สำเร็จ</li><li>13. Reproducibility และการควบคุมคุณภาพ</li><li>14. แนวทางพัฒนาต่อบนเครื่องแรง</li><li>15. สรุป</li><li>ภาคผนวก A: MQTT message types ที่ใช้</li><li>ภาคผนวก B: Artifact สำคัญ</li><li>ภาคผนวก C: ข้อความนำเสนอ 60 วินาที</li><li>ภาคผนวก D: แหล่งอ้างอิง</li></ol></section>
 <main><h1>1. บทสรุปผู้บริหาร</h1>
 <p>โจทย์นี้ต่างจากงาน binary classification ปกติ เพราะ <code>X_train.csv</code> จำนวน 100,000 แถวมีเฉพาะข้อมูล Normal แต่ <code>X_test.csv</code> จำนวน 10,000 แถวมีทั้ง Normal และ Attack ดังนั้นเราไม่มีตัวอย่าง Attack ที่ติด label สำหรับฝึก supervised classifier โดยตรง งานจึงอยู่ในรูปแบบ one-class classification หรือ anomaly detection</p>
 <p>แนวทางที่ใช้ไม่ได้พยายามสร้าง anomaly score เพียงค่าเดียว แต่ประกอบ detector จากความรู้ระดับโปรโตคอล ได้แก่รูปแบบ TCP/MQTT ที่ไม่เกิดในชุด Normal รูปแบบของการโจมตีทั้ง 5 กลุ่ม ความสอดคล้องภายใน TCP stream และหลักฐานจากข้อมูล PCAP ต้นทาง จากนั้นใช้ Kaggle submission อย่างจำกัดเป็น controlled experiment เพื่อยืนยันหรือหักล้างสมมติฐานทีละกลุ่ม</p>
 <p>ผลลัพธ์สำคัญ:</p>
 <ul>
-<li>เพิ่ม Public F1 จาก <code>0.54898</code> ในรอบแรกเป็น <code>0.96267</code> ในไฟล์สุดท้ายที่เลือก</li>
-<li>ไฟล์ที่เลือกได้ Private F1 <code>0.97198</code></li>
+<li>ไฟล์ที่อธิบายในรายงานคือ <code>outputs/offline_benchmark_candidates/submission_offline_02_hedge_payload132.csv</code></li>
+<li>ไฟล์มี 10,000 rows, 2,811 positive labels และ schema <code>Id,label</code></li>
+<li>ไฟล์ที่ผู้ใช้เลือกได้ Public F1 <code>0.96267</code> และ Private F1 <code>0.97198</code></li>
 <li>ไฟล์ <code>submission_v8_micro_best.csv</code> ได้ Private F1 <code>0.97232</code> แม้ Public F1 ต่ำกว่าเล็กน้อยที่ <code>0.96193</code> แสดงความเสี่ยงของการเลือกโมเดลจาก Public leaderboard เพียงอย่างเดียว</li>
 <li>สแกน attack PCAP ครบ <code>313/313</code> ไฟล์ ประมาณ <code>30.4 GB</code> และ <code>215.6 ล้าน</code> TCP packets</li>
 <li>สแกน normal PCAP ครบ <code>49/49</code> ไฟล์ ประมาณ <code>7.0 GB</code> และ <code>45.4 ล้าน</code> TCP packets</li>
 <li>การเพิ่ม <code>Id=8150</code> จาก shape match เพียงระดับ packet ทำให้ Public F1 ลดจาก <code>0.96230</code> เป็น <code>0.96196</code> จึงยกเลิกสมมติฐานทันที</li>
 <li>การเพิ่ม <code>Id=1145</code> ซึ่งเป็น payload pattern ที่คัดไว้อย่างเข้มงวด ทำให้ Public F1 เพิ่มจาก <code>0.96230</code> เป็น <code>0.96267</code></li>
 </ul>
+<h2>1.1 Selected artifact ที่รายงาน</h2>
+<table>
+<thead><tr><th>รายการ</th><th>ค่า</th><th>ที่มา</th></tr></thead>
+<tbody>
+<tr><td>ไฟล์</td><td><code>submission_offline_02_hedge_payload132.csv</code></td><td>candidate ที่ผู้ใช้เลือกสำหรับ upload</td></tr>
+<tr><td>วิธีสร้าง</td><td>baseline + structural <code>Id=9816</code> + payload132 hedge <code>Id=1145</code></td><td>offline candidate manifest และ changed-Id audit</td></tr>
+<tr><td>Rows / positives</td><td>10,000 / 2,811</td><td>ตรวจจาก CSV โดยตรง</td></tr>
+<tr><td>Public / Private</td><td>0.96267 / 0.97198</td><td>คะแนน submission ที่ผู้ใช้รายงาน</td></tr>
+<tr><td>SHA-256</td><td><code>2fe54d9dd8fc524d605fb0115941e896c86d09a6be5485d1ab626f66375c03a4</code></td><td>คำนวณจากไฟล์ selected artifact</td></tr>
+</tbody></table>
+<blockquote>รายงานนี้อธิบาย selected artifact โดยตรง. ค่า offline mean F1 และ public-delta proxy ใช้เป็นเครื่องมือเลือก candidate เท่านั้น ไม่ใช่ Kaggle ground truth.</blockquote>
 <h1>2. โจทย์และเงื่อนไขการแข่งขัน</h1>
 <h2>2.1 เป้าหมาย</h2>
 <p>ทำนาย label ของแต่ละ record ใน <code>X_test.csv</code>:</p>
@@ -330,7 +344,7 @@ labels &amp;= ~pingresp_false_positive
 <td>payload <code>Id=1145</code></td>
 <td align="right"><strong>0.96267</strong></td>
 <td align="right"><strong>0.97198</strong></td>
-<td>Public ดีที่สุดของไฟล์ที่ส่ง</td>
+<td>payload hedge ใน selected offline_02</td>
 </tr>
 </tbody></table>
 <h1>9. การตรวจสอบด้วยข้อมูลต้นทางและ PCAP</h1>
@@ -385,12 +399,12 @@ labels &amp;= ~pingresp_false_positive
 <li>รักษา scored baseline เป็น immutable artifact</li>
 <li>สร้าง candidate ใหม่เป็น delta จาก baseline ไม่เขียนทับไฟล์เดิม</li>
 </ul>
-<p>การจำลอง 20,000 รอบจัด structural file เป็นอันดับหนึ่งในชุด offline และชนะ 15/15 conservative stress scenarios แต่รายงานยังระบุชัดว่า offline proxy ไม่ใช่คะแนน Kaggle รับประกัน</p>
+<p>การจำลอง 20,000 รอบจัด <code>submission_offline_01_scoremax_structural.csv</code> เป็นอันดับหนึ่งในชุด offline และชนะ 15/15 conservative stress scenarios ขณะที่ <code>submission_offline_02_hedge_payload132.csv</code> เป็น backup candidate ที่ผู้ใช้เลือกสำหรับ upload การจัดอันดับ offline ไม่ใช่คะแนน Kaggle และไม่ใช่คำรับประกันอันดับ</p>
 <h1>11. ผลสุดท้ายและการตีความ</h1>
 <h2>11.1 คะแนน</h2>
 <ul>
 <li>Baseline ผู้จัด: Public <code>0.62303</code>, Private <code>0.65030</code></li>
-<li>ไฟล์ที่เลือกของโครงการ: Public <code>0.96267</code>, Private <code>0.97198</code></li>
+<li>Selected artifact <code>submission_offline_02_hedge_payload132.csv</code>: Public <code>0.96267</code>, Private <code>0.97198</code></li>
 <li>Private leaderboard อันดับสูงสุด: <code>0.98149</code></li>
 <li>อันดับสอง: <code>0.97879</code></li>
 <li>กลุ่มคะแนนถัดมา: <code>0.97198</code> หลายทีม รวมทีม <code>610686-วชิรวิทย์</code></li>
@@ -433,12 +447,12 @@ labels &amp;= ~pingresp_false_positive
 <li>บันทึก SHA-256 checksum</li>
 <li>เก็บ submission message และ Kaggle reference</li>
 </ul>
-<p>ไฟล์ที่เลือก:</p>
-<pre><code class="language-text">outputs/submission_current_best_96267.csv
+<p>Selected artifact ที่ต้องเก็บและตรวจ:</p>
+<pre><code class="language-text">outputs/offline_benchmark_candidates/submission_offline_02_hedge_payload132.csv
 rows       = 10,000
 positives  = 2,811
 sha256     = 2fe54d9dd8fc524d605fb0115941e896c86d09a6be5485d1ab626f66375c03a4
-Kaggle ref = 54808193
+status     = selected upload artifact
 </code></pre>
 <h1>14. แนวทางพัฒนาต่อบนเครื่องแรง</h1>
 <h2>14.1 เปลี่ยนหน่วยวิเคราะห์จาก packet เป็น flow</h2>
@@ -557,8 +571,8 @@ Kaggle ref = 54808193
 <td>deterministic rule predictor</td>
 </tr>
 <tr>
-<td><code>outputs/submission_current_best_96267.csv</code></td>
-<td>ไฟล์ที่ได้ Public 0.96267</td>
+<td><code>outputs/offline_benchmark_candidates/submission_offline_02_hedge_payload132.csv</code></td>
+<td>selected upload artifact, Public 0.96267 / Private 0.97198</td>
 </tr>
 <tr>
 <td><code>outputs/submission_next_01_twin_payload132.csv</code></td>
@@ -586,7 +600,17 @@ Kaggle ref = 54808193
 </tr>
 </tbody></table>
 <h1>ภาคผนวก C: ข้อความนำเสนอ 60 วินาที</h1>
-<p>“โจทย์นี้มีข้อมูลฝึกที่เป็น Normal ทั้งหมด จึงไม่ใช่ classification แบบทั่วไป ผมเริ่มจากสร้าง normal profile แล้วใช้ความหมายของ TCP และ MQTT ระบุรูปแบบโจมตีที่อธิบายได้ จากนั้นตัด false positives ด้วย controlled probes ตรวจความครบถ้วนระดับ stream และสแกน PCAP ต้นทางกว่า 37 GB เพื่อยืนยันหรือหักล้าง candidate ผลคือคะแนนเพิ่มจาก Public 0.54898 เป็น 0.96267 และ Private 0.97198 บทเรียนสำคัญคือ packet anomaly เพียงอย่างเดียวไม่พอ ต้องใช้ protocol context, flow structure และการเลือกโมเดลที่ไม่ overfit Public leaderboard”</p>
+<p>“โจทย์นี้มีข้อมูลฝึกเป็น Normal ทั้งหมด จึงไม่ใช่ classification แบบทั่วไป ผมเริ่มจากสร้าง normal profile แล้วใช้ความหมายของ TCP และ MQTT ระบุรูปแบบโจมตีที่อธิบายได้ จากนั้นตัด false positives ด้วย controlled probes ตรวจความครบถ้วนระดับ stream และเลือกไฟล์ <code>submission_offline_02_hedge_payload132.csv</code> ซึ่งมี Public 0.96267 และ Private 0.97198 บทเรียนสำคัญคือ packet anomaly เพียงอย่างเดียวไม่พอ ต้องใช้ protocol context, flow structure และ falsification”</p>
+<h1>ภาคผนวก D: แหล่งอ้างอิง</h1>
+<ul>
+<li><a href="https://www.kaggle.com/competitions/superai6-iot-attack-detection">Kaggle — SuperAI6 IoT Attack Detection</a>: โจทย์, submission history และ leaderboard</li>
+<li><a href="https://docs.oasis-open.org/mqtt/mqtt/v3.1.1/mqtt-v3.1.1.html">OASIS — MQTT Version 3.1.1</a>: message types และ protocol semantics</li>
+<li><a href="https://www.wireshark.org/docs/dfref/m/mqtt.html">Wireshark — MQTT Display Filter Reference</a>: field names เช่น <code>mqtt.msgtype</code>, <code>mqtt.kalive</code>, <code>mqtt.len</code></li>
+<li><code>outputs/predict_final_model.py</code>: deterministic rule detector</li>
+<li><code>outputs/offline_benchmark_report.md</code>: offline simulation, sensitivity และ candidate ranking</li>
+<li><code>outputs/offline_benchmark_results.csv</code>: ตัวเลข offline ต่อ candidate</li>
+<li><code>docs/artifact_checksums.sha256</code>: manifest สำหรับตรวจ artifact</li>
+</ul>
 <p class="source-note">อ้างอิง: เอกสารโจทย์ SuperAI6, Kaggle submission history และ artifacts ใน repository</p></main>
 </body>
 </html>

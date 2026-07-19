@@ -8,6 +8,7 @@
 | `SuperAI6_IoT_Attack_Detection_Design_Report_TH.pdf` | อ่านหรือส่งกรรมการ | Design Report ที่ render ภาษาไทยแล้ว |
 | `SuperAI6_IoT_Attack_Detection_Report_TH.pdf` | อ่านเชิงเทคนิครายละเอียด | รายงานเต็ม 22 หน้า พร้อมกฎ การทดลอง และ reproducibility |
 | `SuperAI6_IoT_Attack_Detection_Report_TH.md` | แก้เนื้อหาต้นฉบับ | canonical technical content |
+| `SuperAI6_IoT_Attack_Detection_Report_TH.html` | เปิดผ่าน browser | รายงาน HTML ที่อธิบาย selected offline_02 artifact โดยตรง |
 | `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.pptx` | พรีเซนต์ | 17 slides, 16:9, speaker notes ฝังในไฟล์ |
 | `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.pdf` | เปิดสำรอง | PDF ที่ตรวจ Thai glyph และ layout แล้ว |
 | `../presentation/SuperAI6_IoT_Attack_Detection_Presentation_TH.html` | พรีเซนต์ผ่าน browser | ไฟล์เดียวจบ 12 slides มี notes, keyboard, fullscreen, touch และ print/PDF |
